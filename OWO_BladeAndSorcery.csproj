@@ -33,9 +33,11 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>libs\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OWO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\OWO.2.4.2\lib\net48\OWO.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,12 +49,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="ThunderRoad">
       <HintPath>libs\ThunderRoad.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>libs\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -65,4 +70,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del  "$(TargetDir)\OWO\*.owo
+XCOPY "$(SolutionDir)OWO" "$(TargetDir)\OWO\" /S /Y
+del "$(TargetDir)\*.pdb"
+del "$(TargetDir)\*.xml"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
