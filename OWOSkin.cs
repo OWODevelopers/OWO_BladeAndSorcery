@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using UnityEngine;
 
 namespace OWO_BaldeAndSorcery
 {
@@ -28,7 +29,10 @@ namespace OWO_BaldeAndSorcery
                     w.WriteLine($"[{logCategory}]: {msg}");
                 }
             }
-            catch (Exception ex){}        
+            catch (Exception ex)
+            {
+                Debug.Log($"[OWO-WARNING]{ex}");
+            }        
         }
 
         #region Skin Configuration
@@ -143,6 +147,18 @@ namespace OWO_BaldeAndSorcery
             }
 
             else LOG("Feedback not registered: " + key, "OWO-SENSATION");
+        }
+
+        public void StopAllHapticFeedback()
+        {
+            //Call all stop methods from loops
+
+            OWO.Stop();
+        }
+
+        public bool CanFeel()
+        {
+            return suitEnabled;
         }
     }
 }
