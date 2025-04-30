@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OWO_BaldeAndSorcery
+namespace OWO_BladeAndSorcery
 {
     public class OWO_BladeAndSorcery
     {
