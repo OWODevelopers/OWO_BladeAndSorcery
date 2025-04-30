@@ -10,6 +10,7 @@ namespace OWO_BaldeAndSorcery
     public class OWOSkin
     {
         public Dictionary<String, Sensation> SensationsMap = new Dictionary<String, Sensation>();
+        public bool playing = false;
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
         private bool suitEnabled = false;
@@ -158,7 +159,7 @@ namespace OWO_BaldeAndSorcery
 
         public bool CanFeel()
         {
-            return suitEnabled;
+            return suitEnabled && playing;
         }
     }
 }
