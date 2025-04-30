@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ThunderRoad;
+
 
 namespace OWO_BladeAndSorcery
 {
-    public class OWO_BladeAndSorcery
+    public class OWO_BladeAndSorcery : ThunderScript
     {
+        public override void ScriptLoaded(ModManager.ModData modData)
+        {
+            base.ScriptLoaded(modData); //Load on PlayGame button pressed
+        }
     }
 }
