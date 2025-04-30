@@ -7,8 +7,8 @@
     <ProjectGuid>{8959F546-6D29-4E47-B051-AC0503A0730E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OWO_BaldeAndSorcery</RootNamespace>
-    <AssemblyName>OWO_BaldeAndSorcery</AssemblyName>
+    <RootNamespace>OWO_BladeAndSorcery</RootNamespace>
+    <AssemblyName>OWO_BladeAndSorcery</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -73,6 +73,7 @@
   <PropertyGroup>
     <PostBuildEvent>del  "$(TargetDir)\OWO\*.owo
 XCOPY "$(SolutionDir)OWO" "$(TargetDir)\OWO\" /S /Y
+COPY "$(SolutionDir)manifest.json" "$(TargetDir)manifest.json"
 del "$(TargetDir)\*.pdb"
 del "$(TargetDir)\*.xml"</PostBuildEvent>
   </PropertyGroup>
