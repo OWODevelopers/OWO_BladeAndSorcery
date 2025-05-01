@@ -89,6 +89,7 @@ namespace OWO_BladeAndSorcery
         //    }
         //}
 
+        //Funciona perfecto para parar la telequinesis, pero se lllama al subir escaleras por ejemplo
         [HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
         public class OnGrabEvent
         {
@@ -99,6 +100,7 @@ namespace OWO_BladeAndSorcery
             }
         }
 
+        //funciona
         [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
         public class OnTeleport
         {
@@ -141,6 +143,7 @@ namespace OWO_BladeAndSorcery
             }
         }
         
+        //funciona
         [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
         public class OnTelekinesisGrab
         {
@@ -151,6 +154,7 @@ namespace OWO_BladeAndSorcery
             }
         }
         
+        //funciona pero lo mismo no nos sirve cuando nos dan
         [HarmonyPatch(typeof(EventManager), "InvokeCreatureAttack")]
         public class OnInvokeCreatureAttack
         {
