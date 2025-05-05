@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using OWO_BaldeAndSorcery;
 using System;
 using ThunderRoad;
 using UnityEngine;
@@ -205,7 +204,18 @@ namespace OWO_BladeAndSorcery
             }
         }
 
+        [HarmonyPatch(typeof(BowString), "ManagedUpdate")]
+        public class OnManagedUpdateBow
+        {
+            [HarmonyPostfix]
+            public static void Postfix(BowString __instance)
+            {
+                owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
+                __instance.IsInvoking();
+            }
+        }
 
+        
         #endregion
 
 
