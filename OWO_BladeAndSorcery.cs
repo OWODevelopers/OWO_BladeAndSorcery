@@ -3,7 +3,6 @@ using System;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
-using static ThunderRoad.RevealMaskTester;
 
 
 namespace OWO_BladeAndSorcery
@@ -43,7 +42,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix()
             {
-               //Se llama al cambiar de opcion en el menu del juego
+                //Se llama al cambiar de opcion en el menu del juego
                 //owoSkin.LOG("MenuOpened");
             }
         }
@@ -61,7 +60,7 @@ namespace OWO_BladeAndSorcery
         #endregion
 
         #region Player     
-        
+
         // - Water funciona pero se manda sin parar, hay que verlo. 
 
         //[HarmonyPatch(typeof(Player), "OnEnterWater")]
@@ -113,7 +112,7 @@ namespace OWO_BladeAndSorcery
         //    }
         //}
 
-        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
+        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform) })]
         public class OnTeleport
         {
             [HarmonyPostfix]
@@ -121,7 +120,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.Feel("Teleport");              
+                owoSkin.Feel("Teleport");
             }
         }
 
@@ -205,13 +204,13 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Vector3 velocity)
             {
                 canJump = true;
-                if(velocity.magnitude >= 0.5f)
+                if (velocity.magnitude >= 0.5f)
                     //intensity per velocity(?
-                owoSkin.Feel("Landing");
+                    owoSkin.Feel("Landing");
             }
         }
 
-        
+
         [HarmonyPatch(typeof(Locomotion), "Jump")]
         public class OnJump
         {
@@ -235,7 +234,46 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        
+        [HarmonyPatch(typeof(Player), "ManagedUpdate")]
+        public class OnPlayerUpdate
+        {
+            public static bool leftHandClimbing = false;
+            public static bool rightHandClimbing = false;
+
+            [HarmonyPostfix]
+            public static void Postfix(Player __instance)
+            {
+                Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left);
+                Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
+                if (Player.local.handLeft.ragdollHand.climb.isGripping || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handLeftEnabled && __instance.creature.ragdoll.ik.handLeftTarget != null && heldItem == null && __instance.creature.equipment.GetHeldHandle(Side.Left) != null && !__instance.creature.equipment.GetHeldHandle(Side.Left).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Left) - 1f) < 0.0001f))
+                {
+                    if (!leftHandClimbing)
+                    {
+                        leftHandClimbing = true;
+                        owoSkin.LOG($"PRUEBA ESCALADA IZQUIERDA", "EVENT");
+                    }
+                }
+                else
+                {
+                    leftHandClimbing = false;
+                }
+
+                if (Player.local.handRight.ragdollHand.climb.isGripping || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handRightEnabled && __instance.creature.ragdoll.ik.handRightTarget != null && heldItem2 == null && __instance.creature.equipment.GetHeldHandle(Side.Right) != null && !__instance.creature.equipment.GetHeldHandle(Side.Right).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Right) - 1f) < 0.0001f))
+                {
+                    if (!rightHandClimbing)
+                    {
+                        rightHandClimbing = true;
+                        owoSkin.LOG($"PRUEBA ESCALADA DERECHA", "EVENT");
+
+                    }
+                }
+                else
+                {
+                    rightHandClimbing = false;
+                }
+            }
+        }
+
         #endregion
 
 
