@@ -171,32 +171,6 @@ namespace OWO_BladeAndSorcery
 
         #region Prueba
 
-        [HarmonyPatch(typeof(Locomotion), "OnGround")]
-        public class OnOnGround
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Vector3 velocity)
-            {
-                canJump = true;
-                if(velocity.magnitude >= 0.5f)
-                    //intensity per velocity(?
-                owoSkin.Feel("Landing");
-            }
-        }
-
-        
-        [HarmonyPatch(typeof(Locomotion), "Jump")]
-        public class OnJump
-        {
-            [HarmonyPostfix]
-            public static void Postfix(bool active)
-            {
-                if (!canJump || !active) return;
-                owoSkin.Feel("Jump");
-                canJump = false;
-            }
-        }
-
         [HarmonyPatch(typeof(BowString), "ManagedUpdate")]
         public class OnManagedUpdateBow
         {
