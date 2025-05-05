@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using ThunderRoad;
+using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
 using static ThunderRoad.RevealMaskTester;
 
@@ -59,26 +60,37 @@ namespace OWO_BladeAndSorcery
 
         #endregion
 
-        #region Player        
-        [HarmonyPatch(typeof(Player), "OnEnterWater")]
-        public class OnEnterWater
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnEnterWater");
-            }
-        }
+        #region Player     
+        
+        // - Water funciona pero se manda sin parar, hay que verlo. 
 
-        [HarmonyPatch(typeof(Player), "OnExitWater")]
-        public class OnExitWater
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnExitWater");
-            }
-        }
+        //[HarmonyPatch(typeof(Player), "OnEnterWater")]
+        //public class OnEnterWater
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix()
+        //    {
+        //        owoSkin.LOG("Start Swimming", "EVENT");
+
+        //        if (!owoSkin.CanFeel()) return;
+
+        //        owoSkin.StartSwimming();
+        //    }
+        //}
+
+        //[HarmonyPatch(typeof(Player), "OnExitWater")]
+        //public class OnExitWater
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix()
+        //    {
+        //        owoSkin.LOG("Stop Swimming", "EVENT");
+
+        //        if (!owoSkin.CanFeel()) return;
+
+        //        owoSkin.StopSwimming();
+        //    }
+        //}
 
         //[HarmonyPatch(typeof(PlayerHand), "Start")]
         //public class OnPHStart
@@ -91,38 +103,57 @@ namespace OWO_BladeAndSorcery
         //}
 
         //Funciona perfecto para parar la telequinesis, pero se lllama al subir escaleras por ejemplo
-        [HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
-        public class OnGrabEvent
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Side side)
-            {
-                owoSkin.LOG($"OnGrabEvent hand: {side}", "EVENT");
-            }
-        }
+        //[HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
+        //public class OnGrabEvent
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix(Side side)
+        //    {
+        //        owoSkin.LOG($"OnGrabEvent hand: {side}", "EVENT");
+        //    }
+        //}
 
-        //funciona
         [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
         public class OnTeleport
         {
             [HarmonyPostfix]
             public static void Postfix()
             {
-              owoSkin.LOG($"Player Teleport", "EVENT");
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.Feel("Teleport");              
+            }
+        }
+
+        [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
+        public class OnTelekinesisGrab
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
+            {
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR"}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
+            }
+        }
+
+        [HarmonyPatch(typeof(Handle), "OnTelekinesisRelease")]
+        public class OnTelekinesisRelease
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
+            {
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StopTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
             }
         }
 
         #endregion
-
-        [HarmonyPatch(typeof(PlayerWaist), "Awake")]
-        public class OnPlayerWaist
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"PlayerWaist AWAKE", "EVENT");
-            }
-        }
 
         [HarmonyPatch(typeof(UIInventory), "Awake")]
         public class OnOpenInventoryAwake
@@ -143,18 +174,7 @@ namespace OWO_BladeAndSorcery
                 owoSkin.LOG($"OnOpenInventory", "EVENT");
             }
         }
-        
-        //funciona
-        [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
-        public class OnTelekinesisGrab
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
-            }
-        }
-        
+
         //funciona pero lo mismo no nos sirve cuando nos dan
         [HarmonyPatch(typeof(EventManager), "InvokeCreatureAttack")]
         public class OnInvokeCreatureAttack
