@@ -66,6 +66,8 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix()
             {
+                owoSkin.LOG("Start Swimming", "EVENT");
+
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.StartSwimming();
@@ -123,11 +125,11 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(SpellTelekinesis spellTelekinesis)
             {
-                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR"}", "EVENT");
 
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.StartTelekinesis(true);
+                owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
 
                 //owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand);                
                 //(owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
@@ -144,7 +146,7 @@ namespace OWO_BladeAndSorcery
 
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.StopTelekinesis(true);
+                owoSkin.StopTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
             }
         }
 
