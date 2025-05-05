@@ -60,58 +60,7 @@ namespace OWO_BladeAndSorcery
 
         #endregion
 
-        #region Player     
-        
-        // - Water funciona pero se manda sin parar, hay que verlo. 
-
-        //[HarmonyPatch(typeof(Player), "OnEnterWater")]
-        //public class OnEnterWater
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix()
-        //    {
-        //        owoSkin.LOG("Start Swimming", "EVENT");
-
-        //        if (!owoSkin.CanFeel()) return;
-
-        //        owoSkin.StartSwimming();
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(Player), "OnExitWater")]
-        //public class OnExitWater
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix()
-        //    {
-        //        owoSkin.LOG("Stop Swimming", "EVENT");
-
-        //        if (!owoSkin.CanFeel()) return;
-
-        //        owoSkin.StopSwimming();
-        //    }
-        //}
-
-        //[HarmonyPatch(typeof(PlayerHand), "Start")]
-        //public class OnPHStart
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(PlayerHand __instance)
-        //    {
-        //        owoSkin.LOG($"Start hand: {__instance.controlHand.side}");
-        //    }
-        //}
-
-        //Funciona perfecto para parar la telequinesis, pero se lllama al subir escaleras por ejemplo
-        //[HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
-        //public class OnGrabEvent
-        //{
-        //    [HarmonyPostfix]
-        //    public static void Postfix(Side side)
-        //    {
-        //        owoSkin.LOG($"OnGrabEvent hand: {side}", "EVENT");
-        //    }
-        //}
+        #region Player            
 
         [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
         public class OnTeleport
@@ -150,6 +99,31 @@ namespace OWO_BladeAndSorcery
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.StopTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
+            }
+        }
+
+        [HarmonyPatch(typeof(Locomotion), "Jump")]
+        public class OnJump
+        {
+            [HarmonyPostfix]
+            public static void Postfix(bool active)
+            {
+                if (!canJump || !active) return;
+                owoSkin.Feel("Jump");
+                canJump = false;
+            }
+        }
+
+        [HarmonyPatch(typeof(Locomotion), "OnGround")]
+        public class OnOnGround
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Vector3 velocity)
+            {
+                canJump = true;
+                if (velocity.magnitude >= 0.5f)
+                    //intensity per velocity(?
+                    owoSkin.Feel("Landing");
             }
         }
 
@@ -197,32 +171,6 @@ namespace OWO_BladeAndSorcery
         }
 
         #region Prueba
-
-        [HarmonyPatch(typeof(Locomotion), "OnGround")]
-        public class OnOnGround
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Vector3 velocity)
-            {
-                canJump = true;
-                if(velocity.magnitude >= 0.5f)
-                    //intensity per velocity(?
-                owoSkin.Feel("Landing");
-            }
-        }
-
-        
-        [HarmonyPatch(typeof(Locomotion), "Jump")]
-        public class OnJump
-        {
-            [HarmonyPostfix]
-            public static void Postfix(bool active)
-            {
-                if (!canJump || !active) return;
-                owoSkin.Feel("Jump");
-                canJump = false;
-            }
-        }
 
         [HarmonyPatch(typeof(BowString), "ManagedUpdate")]
         public class OnManagedUpdateBow
