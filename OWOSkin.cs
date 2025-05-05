@@ -19,6 +19,7 @@ namespace OWO_BaldeAndSorcery
         private bool telekinesisIsActive = false;
         private bool telekinesisLIsActive = false;
         private bool telekinesisRIsActive = false;
+        private bool swimmingIsActive = false;
 
         public OWOSkin()
         {
@@ -157,7 +158,9 @@ namespace OWO_BaldeAndSorcery
 
         public void StopAllHapticFeedback()
         {
-            //Call all stop methods from loops
+            StopSwimming();
+            StopTelekinesis(true);
+            StopTelekinesis(false);
 
             OWO.Stop();
         }
@@ -219,6 +222,32 @@ namespace OWO_BaldeAndSorcery
             }
 
             telekinesisIsActive = false;
+        }
+
+        #endregion
+
+        #region Swimming
+
+        public void StartSwimming()
+        {
+            if (!swimmingIsActive)
+                SwimmingFuncAsync();
+
+            swimmingIsActive = true;
+        }
+
+        public void StopSwimming()
+        {
+           swimmingIsActive = false;
+        }
+
+        public async Task SwimmingFuncAsync()
+        {
+            while (swimmingIsActive)
+            {
+                Feel("Swimming", 1);
+                await Task.Delay(1000);
+            }
         }
 
         #endregion

@@ -66,7 +66,9 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix()
             {
-                owoSkin.LOG($"OnEnterWater");
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StartSwimming();
             }
         }
 
@@ -76,7 +78,9 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix()
             {
-                owoSkin.LOG($"OnExitWater");
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StopSwimming();
             }
         }
 
@@ -91,15 +95,15 @@ namespace OWO_BladeAndSorcery
         //}
 
         //Funciona perfecto para parar la telequinesis, pero se lllama al subir escaleras por ejemplo
-        [HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
-        public class OnGrabEvent
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Side side)
-            {
-                owoSkin.LOG($"OnGrabEvent hand: {side}", "EVENT");
-            }
-        }
+        //[HarmonyPatch(typeof(PlayerHand), "OnGrabEvent")]
+        //public class OnGrabEvent
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix(Side side)
+        //    {
+        //        owoSkin.LOG($"OnGrabEvent hand: {side}", "EVENT");
+        //    }
+        //}
 
         [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
         public class OnTeleport
@@ -110,6 +114,37 @@ namespace OWO_BladeAndSorcery
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.Feel("Teleport");              
+            }
+        }
+
+        [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
+        public class OnTelekinesisGrab
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
+            {
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StartTelekinesis(true);
+
+                //owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand);                
+                //(owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
+            }
+        }
+
+        [HarmonyPatch(typeof(Handle), "OnTelekinesisRelease")]
+        public class OnTelekinesisRelease
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
+            {
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StopTelekinesis(true);
             }
         }
 
@@ -142,37 +177,6 @@ namespace OWO_BladeAndSorcery
             public static void Postfix()
             {
                 owoSkin.LOG($"OnOpenInventory", "EVENT");
-            }
-        }
-        
-        [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
-        public class OnTelekinesisGrab
-        {
-            [HarmonyPostfix]
-            public static void Postfix(SpellTelekinesis spellTelekinesis)
-            {
-                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
-
-                if (!owoSkin.CanFeel()) return;
-
-                owoSkin.StartTelekinesis(true);
-
-                //owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand);                
-                //(owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
-            }
-        }
-
-        [HarmonyPatch(typeof(Handle), "OnTelekinesisRelease")]
-        public class OnTelekinesisRelease
-        {
-            [HarmonyPostfix]
-            public static void Postfix(SpellTelekinesis spellTelekinesis)
-            {
-                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
-
-                if (!owoSkin.CanFeel()) return;
-
-                owoSkin.StopTelekinesis(true);
             }
         }
 
