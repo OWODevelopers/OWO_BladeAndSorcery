@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using UnityEngine;
 
-namespace OWO_BaldeAndSorcery
+namespace OWO_BladeAndSorcery
 {
     public class OWOSkin
     {
