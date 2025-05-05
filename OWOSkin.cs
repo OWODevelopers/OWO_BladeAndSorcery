@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace OWO_BaldeAndSorcery
@@ -11,9 +12,13 @@ namespace OWO_BaldeAndSorcery
     {
         public Dictionary<String, Sensation> SensationsMap = new Dictionary<String, Sensation>();
         public bool playing = false;
+        private bool suitEnabled = false;
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
-        private bool suitEnabled = false;
+
+        private bool telekinesisIsActive = false;
+        private bool telekinesisLIsActive = false;
+        private bool telekinesisRIsActive = false;
 
         public OWOSkin()
         {
@@ -161,5 +166,63 @@ namespace OWO_BaldeAndSorcery
         {
             return suitEnabled && playing;
         }
+
+        #region Loops
+
+        #region Telekinesis
+
+        public void StartTelekinesis(bool isRight)
+        {
+            if (isRight)
+                telekinesisRIsActive = true;
+
+            if (!isRight)
+                telekinesisLIsActive = true;
+
+
+            if (!telekinesisIsActive)
+                TelekinesisFuncAsync();
+
+            telekinesisIsActive = true;
+        }
+
+        public void StopTelekinesis(bool isRight)
+        {
+            if (isRight)
+            {
+                telekinesisRIsActive = false;
+            }
+            else
+            {
+                telekinesisLIsActive = false;
+            }
+        }
+
+        public async Task TelekinesisFuncAsync()
+        {
+            string toFeel = "";
+
+            while (telekinesisRIsActive || telekinesisLIsActive)
+            {
+                if (telekinesisRIsActive)
+                    toFeel = "Telekinesis R";
+
+                if (telekinesisLIsActive)
+                    toFeel = "Telekinesis L";
+
+                if (telekinesisRIsActive && telekinesisLIsActive)
+                    toFeel = "Telekinesis RL";
+
+
+                Feel(toFeel, 2);
+                await Task.Delay(1000);
+            }
+
+            telekinesisIsActive = false;
+        }
+
+        #endregion
+
+        #endregion
     }
 }

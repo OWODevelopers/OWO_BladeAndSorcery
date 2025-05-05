@@ -2,6 +2,7 @@
 using OWO_BaldeAndSorcery;
 using System;
 using ThunderRoad;
+using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
 using static ThunderRoad.RevealMaskTester;
 
@@ -144,17 +145,37 @@ namespace OWO_BladeAndSorcery
             }
         }
         
-        //funciona
         [HarmonyPatch(typeof(Handle), "OnTelekinesisGrab")]
         public class OnTelekinesisGrab
         {
             [HarmonyPostfix]
-            public static void Postfix()
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
             {
-                owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StartTelekinesis(true);
+
+                //owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand);                
+                //(owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
             }
         }
-        
+
+        [HarmonyPatch(typeof(Handle), "OnTelekinesisRelease")]
+        public class OnTelekinesisRelease
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellTelekinesis spellTelekinesis)
+            {
+                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.StopTelekinesis(true);
+            }
+        }
+
         //funciona pero lo mismo no nos sirve cuando nos dan
         [HarmonyPatch(typeof(EventManager), "InvokeCreatureAttack")]
         public class OnInvokeCreatureAttack
