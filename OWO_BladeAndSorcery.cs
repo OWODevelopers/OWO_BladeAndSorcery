@@ -100,14 +100,15 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        //funciona
         [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
         public class OnTeleport
         {
             [HarmonyPostfix]
             public static void Postfix()
             {
-              owoSkin.LOG($"Player Teleport", "EVENT");
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.Feel("Teleport");              
             }
         }
 
