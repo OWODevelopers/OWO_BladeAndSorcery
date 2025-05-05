@@ -135,9 +135,6 @@ namespace OWO_BladeAndSorcery
                 if (!owoSkin.CanFeel()) return;
 
                 owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR");
-
-                //owoSkin.StartTelekinesis(spellTelekinesis.spellCaster.ragdollHand.playerHand);                
-                //(owoSkin.LOG($"OnTelekinesisGrab", "EVENT");
             }
         }
 
@@ -156,16 +153,6 @@ namespace OWO_BladeAndSorcery
         }
 
         #endregion
-
-        [HarmonyPatch(typeof(PlayerWaist), "Awake")]
-        public class OnPlayerWaist
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"PlayerWaist AWAKE", "EVENT");
-            }
-        }
 
         [HarmonyPatch(typeof(UIInventory), "Awake")]
         public class OnOpenInventoryAwake
