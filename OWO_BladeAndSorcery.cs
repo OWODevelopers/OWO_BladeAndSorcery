@@ -59,32 +59,37 @@ namespace OWO_BladeAndSorcery
 
         #endregion
 
-        #region Player        
-        [HarmonyPatch(typeof(Player), "OnEnterWater")]
-        public class OnEnterWater
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG("Start Swimming", "EVENT");
+        #region Player     
+        
+        // - Water funciona pero se manda sin parar, hay que verlo. 
 
-                if (!owoSkin.CanFeel()) return;
+        //[HarmonyPatch(typeof(Player), "OnEnterWater")]
+        //public class OnEnterWater
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix()
+        //    {
+        //        owoSkin.LOG("Start Swimming", "EVENT");
 
-                owoSkin.StartSwimming();
-            }
-        }
+        //        if (!owoSkin.CanFeel()) return;
 
-        [HarmonyPatch(typeof(Player), "OnExitWater")]
-        public class OnExitWater
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                if (!owoSkin.CanFeel()) return;
+        //        owoSkin.StartSwimming();
+        //    }
+        //}
 
-                owoSkin.StopSwimming();
-            }
-        }
+        //[HarmonyPatch(typeof(Player), "OnExitWater")]
+        //public class OnExitWater
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix()
+        //    {
+        //        owoSkin.LOG("Stop Swimming", "EVENT");
+
+        //        if (!owoSkin.CanFeel()) return;
+
+        //        owoSkin.StopSwimming();
+        //    }
+        //}
 
         //[HarmonyPatch(typeof(PlayerHand), "Start")]
         //public class OnPHStart
