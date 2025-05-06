@@ -178,7 +178,6 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(BowString __instance)
             {
                 owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
-                __instance.IsInvoking();
             }
         }
 
@@ -234,7 +233,16 @@ namespace OWO_BladeAndSorcery
         }
 
 
+        [HarmonyPatch(typeof(ItemModuleEdible), "OnMouthTouch")]
 
+        public class OnOnMouthTouch
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.Feel($"Eating");
+            }
+        }
 
 
         #endregion
