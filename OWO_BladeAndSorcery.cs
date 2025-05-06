@@ -61,7 +61,7 @@ namespace OWO_BladeAndSorcery
 
         #region Player            
 
-        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform)})]
+        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform) })]
         public class OnTeleport
         {
             [HarmonyPostfix]
@@ -193,34 +193,49 @@ namespace OWO_BladeAndSorcery
             {
                 Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left);
                 Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
-                if (Player.local.handLeft.ragdollHand.climb.isGripping || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handLeftEnabled && __instance.creature.ragdoll.ik.handLeftTarget != null && heldItem == null && __instance.creature.equipment.GetHeldHandle(Side.Left) != null && !__instance.creature.equipment.GetHeldHandle(Side.Left).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Left) - 1f) < 0.0001f))
+
+                bool isGripping = Player.local.handLeft.ragdollHand.climb != null && Player.local.handLeft.ragdollHand.climb.isGripping;
+                bool isGripping2 = Player.local.handRight.ragdollHand.climb != null && Player.local.handRight.ragdollHand.climb.isGripping;
+
+                bool isLadder = Player.local.handLeft.ragdollHand.grabbedHandle != null && Player.local.handLeft.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
+                bool isLadder2 = Player.local.handRight.ragdollHand.grabbedHandle != null && Player.local.handRight.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
+
+
+                if (isGripping || isLadder || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handLeftEnabled && __instance.creature.ragdoll.ik.handLeftTarget != null && heldItem == null && __instance.creature.equipment.GetHeldHandle(Side.Left) != null && !__instance.creature.equipment.GetHeldHandle(Side.Left).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Left) - 1f) < 0.0001f))
                 {
                     if (!leftHandClimbing)
                     {
                         leftHandClimbing = true;
-                        owoSkin.LOG($"PRUEBA ESCALADA IZQUIERDA", "EVENT");
+                        owoSkin.LOG($"ESCALADA IZQUIERDA", "EVENT");
                     }
                 }
-                else
+                else if (leftHandClimbing)
                 {
                     leftHandClimbing = false;
+                    owoSkin.LOG($"PARAR ESCALADA IZQUIERDA", "EVENT");
                 }
 
-                if (Player.local.handRight.ragdollHand.climb.isGripping || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handRightEnabled && __instance.creature.ragdoll.ik.handRightTarget != null && heldItem2 == null && __instance.creature.equipment.GetHeldHandle(Side.Right) != null && !__instance.creature.equipment.GetHeldHandle(Side.Right).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Right) - 1f) < 0.0001f))
+
+                if (isGripping2 || isLadder2 || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handRightEnabled && __instance.creature.ragdoll.ik.handRightTarget != null && heldItem2 == null && __instance.creature.equipment.GetHeldHandle(Side.Right) != null && !__instance.creature.equipment.GetHeldHandle(Side.Right).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Right) - 1f) < 0.0001f))
                 {
                     if (!rightHandClimbing)
                     {
                         rightHandClimbing = true;
-                        owoSkin.LOG($"PRUEBA ESCALADA DERECHA", "EVENT");
+                        owoSkin.LOG($"ESCALADA DERECHA", "EVENT");
 
                     }
                 }
-                else
+                else if (rightHandClimbing)
                 {
                     rightHandClimbing = false;
+                    owoSkin.LOG($"PARAR ESCALADA DERECHA", "EVENT");
                 }
             }
         }
+
+
+
+
 
         #endregion
 
