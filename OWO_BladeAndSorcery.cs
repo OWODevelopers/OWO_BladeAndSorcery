@@ -332,11 +332,33 @@ namespace OWO_BladeAndSorcery
         }
 
 
+        [HarmonyPatch(typeof(CollisionHandler), "OnCollisionEnter")]
+        public class OnOnCollisionEnter
+        {
 
-        #endregion
+            [HarmonyPostfix]
+            public static void Postfix(CollisionHandler __instance, Collision collision)
+            {
 
+                ContactPoint contact = collision.GetContact(0);
+                Vector3 point = contact.point;
+                Collider otherCollider = contact.otherCollider;
+                ColliderGroup componentInParent2 = otherCollider.GetComponentInParent<ColliderGroup>();
 
+                Vector3 result = __instance.CalculateLastPointVelocity(point);
+                Vector3 vector = componentInParent2?.collisionHandler?.CalculateLastPointVelocity(point) ?? Vector3.zero;
+                result.x -= vector.x;
+                result.y -= vector.y;
+                result.z -= vector.z;
 
+                Vector3 velocity = (__instance.checkMinVelocity ? result : Vector3.zero);
 
+                owoSkin.LOG($"VELOCITY COLLISION MELEE {velocity.magnitude}", "EVENT");
+
+            }
+        }
     }
+
+    #endregion
+
 }
