@@ -3,6 +3,8 @@ using System;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
+using static ThunderRoad.HandPoseData;
+using static ThunderRoad.ItemData;
 
 
 namespace OWO_BladeAndSorcery
@@ -61,7 +63,7 @@ namespace OWO_BladeAndSorcery
 
         #region Player            
 
-        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new Type[] { typeof(Transform) })]
+        [HarmonyPatch(typeof(PlayerTeleporter), "Teleport", new System.Type[] { typeof(Transform) })]
         public class OnTeleport
         {
             [HarmonyPostfix]
@@ -238,11 +240,33 @@ namespace OWO_BladeAndSorcery
         public class OnOnMouthTouch
         {
             [HarmonyPostfix]
-            public static void Postfix()
+            public static void Postfix(Item item, CreatureMouthRelay mouthRelay)
             {
+                if (!mouthRelay.creature.player) return;
                 owoSkin.Feel($"Eating");
             }
         }
+
+        [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
+
+        public class OnDamage
+        {
+            [HarmonyPrefix]
+            public static void Prefix(Creature __instance,out float __state)
+            {
+                __state = __instance.currentHealth;
+            }
+
+            [HarmonyPostfix]
+            public static void Postfix(Creature __instance, float __state, CollisionInstance collisionInstance)
+            {
+                if (!(bool)__instance.player) return;
+                float damage = __state - __instance.currentHealth;
+                owoSkin.LOG($"Creature Damage - damage: {damage}", "EVENT");
+            }
+        } 
+
+
 
 
         #endregion
