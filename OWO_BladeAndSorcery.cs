@@ -3,8 +3,6 @@ using System;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
-using static ThunderRoad.HandPoseData;
-using static ThunderRoad.ItemData;
 
 
 namespace OWO_BladeAndSorcery
@@ -231,12 +229,12 @@ namespace OWO_BladeAndSorcery
                     rightHandClimbing = false;
                     owoSkin.LOG($"PARAR ESCALADA DERECHA", "EVENT");
                 }
+
             }
         }
 
 
         [HarmonyPatch(typeof(ItemModuleEdible), "OnMouthTouch")]
-
         public class OnOnMouthTouch
         {
             [HarmonyPostfix]
@@ -246,13 +244,12 @@ namespace OWO_BladeAndSorcery
                 owoSkin.Feel($"Eating");
             }
         }
-
         [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
 
         public class OnDamage
         {
             [HarmonyPrefix]
-            public static void Prefix(Creature __instance,out float __state)
+            public static void Prefix(Creature __instance, out float __state)
             {
                 __state = __instance.currentHealth;
             }
@@ -264,8 +261,75 @@ namespace OWO_BladeAndSorcery
                 float damage = __state - __instance.currentHealth;
                 owoSkin.LOG($"Creature Damage - damage: {damage}", "EVENT");
             }
-        } 
+        }
 
+        [HarmonyPatch(typeof(Wearable), "EquipItem")]
+        public class OnEquipItem
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Wearable __instance)
+            {
+                RagdollPart.Type type = __instance.Part.type;
+                switch (type)
+                {
+                    case RagdollPart.Type.Torso:
+                        owoSkin.Feel($"Equip Chest");
+                        break;
+                    case RagdollPart.Type.RightArm:
+                        owoSkin.Feel($"Equip Gauntlet R");
+                        break;
+                    case RagdollPart.Type.LeftArm:
+                        owoSkin.Feel($"Equip Gauntlet L");
+                        break;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Wearable), "UnEquip")]
+        public class OnUnEquip
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Wearable __instance)
+            {
+                RagdollPart.Type type = __instance.Part.type;
+                switch (type)
+                {
+                    case RagdollPart.Type.Torso:
+                        owoSkin.Feel($"Equip Chest");
+                        break;
+                    case RagdollPart.Type.RightArm:
+                        owoSkin.Feel($"Equip Gauntlet R");
+                        break;
+                    case RagdollPart.Type.LeftArm:
+                        owoSkin.Feel($"Equip Gauntlet L");
+                        break;
+                }
+            }
+        }
+
+
+        [HarmonyPatch(typeof(Equipment), "ManageHolsterHandlers")]
+        public class OnManageHolsterHandlers
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Equipment __instance, bool add)
+            {
+                foreach (Holder holder in __instance.creature.holders)
+                {
+                    if (!(holder == null) && (!(holder.name != "HandleShoulderR") || !(holder.name != "HandleShoulderL")))
+                    {
+                        if (!add)
+                        {
+                            owoSkin.Feel((holder.name == "HandleShoulderR") ? "Unholster Right Shoulder" : "Unholster Left Shoulder");
+                        }
+                        else
+                        {
+                            owoSkin.Feel((holder.name == "HandleShoulderR") ? "Holster Right Shoulder" : "Holster Left Shoulder");
+                        }
+                    }
+                }
+            }
+        }
 
 
 
