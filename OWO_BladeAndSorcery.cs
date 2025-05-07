@@ -181,7 +181,7 @@ namespace OWO_BladeAndSorcery
 
         #region Prueba
 
-        [HarmonyPatch(typeof(PlayerFoot), "Kick")]
+        [HarmonyPatch(typeof(PlayerFoot), "Kick" , new Type[] { typeof(bool) })]
         public class OnKick
         {
             [HarmonyPostfix]
@@ -327,7 +327,7 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        [HarmonyPatch(typeof(Wearable), "UnEquip")]
+        [HarmonyPatch(typeof(Wearable), "UnEquip", new Type[] { typeof(string), typeof(Action<Item>)})]
         public class OnUnEquip
         {
             [HarmonyPostfix]
@@ -375,7 +375,7 @@ namespace OWO_BladeAndSorcery
 
 
         [HarmonyPatch(typeof(CollisionHandler), "OnCollisionEnter")]
-        public class OnOnCollisionEnter
+        public class OnCollisionEnter
         {
 
             [HarmonyPostfix]
@@ -397,20 +397,6 @@ namespace OWO_BladeAndSorcery
 
                 owoSkin.LOG($"VELOCITY COLLISION MELEE {velocity.magnitude}", "EVENT");
 
-            }
-        }
-
-        #endregion
-
-        #region debug
-
-        [HarmonyPatch(typeof(ModManager), "LoadThunderScripts")]
-        public class OnLoadThunderScripts
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Type type, ModData mod, Assembly assembly)
-            {
-                owoSkin.LOG($"{mod} - {assembly}","ERROR");
             }
         }
 
