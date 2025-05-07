@@ -28,6 +28,7 @@ namespace OWO_BladeAndSorcery
         public OWOSkin()
         {
             RegisterAllSensationsFiles();
+            DefineAllMuscleGroups();
             InitializeOWO();
         }
 
@@ -75,7 +76,7 @@ namespace OWO_BladeAndSorcery
             muscleMap.Add("Left Arm", leftArm);
             
             Muscle[] rightArm = { Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50) };
-            muscleMap.Add("Right Arm", leftArm);
+            muscleMap.Add("Right Arm", rightArm);
 
             Muscle[] bothArms = leftArm.Concat(rightArm).ToArray();
             muscleMap.Add("Both Arms", bothArms);
@@ -172,13 +173,9 @@ namespace OWO_BladeAndSorcery
 
         public void FeelWithMuscles(String key, String muscleKey = "Right Arm", int Priority = 0, int intensity = 0)
         {
-            Muscle[] muscles = muscleMap[muscleKey];
+            LOG($"FEEL WITH MUSCLES: {key} - {muscleKey}");
 
-            if (muscleMap.ContainsKey(muscleKey))
-            {
-                muscles = muscleMap[muscleKey];
-            }
-            else
+            if (!muscleMap.ContainsKey(muscleKey))
             {
                 LOG("MuscleGroup not registered: " + muscleKey, "OWO-SENSATION");
                 return;
@@ -188,11 +185,11 @@ namespace OWO_BladeAndSorcery
             {
                 if (intensity != 0)
                 {
-                    OWO.Send(SensationsMap[key].WithMuscles(muscles.WithIntensity(intensity)).WithPriority(Priority));
+                    OWO.Send(SensationsMap[key].WithMuscles(muscleMap[muscleKey].WithIntensity(intensity)).WithPriority(Priority));
                 }
                 else
                 {
-                    OWO.Send(SensationsMap[key].WithMuscles(muscles).WithPriority(Priority));
+                    OWO.Send(SensationsMap[key].WithMuscles(muscleMap[muscleKey]).WithPriority(Priority));
                 }
             }
 
@@ -246,21 +243,24 @@ namespace OWO_BladeAndSorcery
 
         public async Task TelekinesisFuncAsync()
         {
-            string toFeel = "";
+            string musclesToFeel = "";
 
             while (telekinesisRIsActive || telekinesisLIsActive)
             {
-                if (telekinesisRIsActive)
-                    toFeel = "Telekinesis R";
-
-                if (telekinesisLIsActive)
-                    toFeel = "Telekinesis L";
-
                 if (telekinesisRIsActive && telekinesisLIsActive)
-                    toFeel = "Telekinesis RL";
+                {
+                    musclesToFeel = "Both Arms";
+                }
+                else 
+                {
+                    if (telekinesisRIsActive)
+                        musclesToFeel = "Right Arm";
 
+                    if (telekinesisLIsActive)
+                        musclesToFeel = "Left Arm";
+                }
 
-                Feel(toFeel, 2);
+                FeelWithMuscles("Telekinesis", musclesToFeel);
                 await Task.Delay(1000);
             }
 
