@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 using System;
+using System.Reflection;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
+using static ThunderRoad.ModManager;
 
 
 namespace OWO_BladeAndSorcery
@@ -397,8 +399,22 @@ namespace OWO_BladeAndSorcery
 
             }
         }
-    }
 
-    #endregion
+        #endregion
+
+        #region debug
+
+        [HarmonyPatch(typeof(ModManager), "LoadThunderScripts")]
+        public class OnLoadThunderScripts
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Type type, ModData mod, Assembly assembly)
+            {
+                owoSkin.LOG($"{mod} - {assembly}","ERROR");
+            }
+        }
+
+        #endregion
+    }
 
 }
