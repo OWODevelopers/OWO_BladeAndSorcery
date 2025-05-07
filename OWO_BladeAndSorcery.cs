@@ -159,19 +159,32 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(BowString __instance)
             {
                 //owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
-
                 if (!owoSkin.CanFeel()) return;
+                
+                owoSkin.bowRightArm = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right";
 
-                if (__instance.currentPullRatio < 0.3f)
+                if (__instance.currentPullRatio > 0.3f)
                 {
-                    string muscles = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right" ? "Right Arm" : "Left Arm";
                     owoSkin.stringBowIntensity = Mathf.FloorToInt(Mathf.Clamp(__instance.currentPullRatio * 100.0f, 40, 100));
-                    owoSkin.StartStringBow(muscles);
+                    owoSkin.StartStringBow();
                 }
                 else if (owoSkin.stringBowIsActive)
                 {
                     owoSkin.StopStringBow();
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerHand), "OnUnGrabEvent")]
+        public class OnUnGrabEvent
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                if (owoSkin.stringBowIsActive)
+                    owoSkin.StopStringBow();
             }
         }
 

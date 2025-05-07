@@ -13,6 +13,7 @@ namespace OWO_BladeAndSorcery
     {
         public bool playing = false;
         public bool stringBowIsActive = false;
+        public bool bowRightArm = true;
         public int stringBowIntensity = 40;
         private bool suitEnabled = false;
 
@@ -272,12 +273,12 @@ namespace OWO_BladeAndSorcery
         #endregion
 
         #region StringBow loop
-        public void StartStringBow(string arm)
-        {
+        public void StartStringBow()
+        {            
             if (stringBowIsActive) return;
 
             stringBowIsActive = true;
-            StringBowFuncAsync(arm);
+            StringBowFuncAsync();
         }
 
         public void StopStringBow()
@@ -285,11 +286,11 @@ namespace OWO_BladeAndSorcery
             stringBowIsActive = false;
         }
 
-        public async Task StringBowFuncAsync(string arm)
+        public async Task StringBowFuncAsync()
         {
             while (stringBowIsActive)
             {
-                FeelWithMuscles("Bow Pull", arm ,1, stringBowIntensity);                
+                FeelWithMuscles("Bow Pull", bowRightArm ? "Right Arm" : "Left Arm", 1, stringBowIntensity);                
                 await Task.Delay(250);
             }
         }
