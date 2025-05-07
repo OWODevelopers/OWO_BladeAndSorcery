@@ -24,6 +24,9 @@ namespace OWO_BladeAndSorcery
         private bool telekinesisIsActive = false;
         private bool telekinesisLIsActive = false;
         private bool telekinesisRIsActive = false;
+        private bool climbIsActive = false;
+        private bool climbLIsActive = false;
+        private bool climbRIsActive = false;
         private bool swimmingIsActive = false;
 
         public Dictionary<string, Sensation> SensationsMap { get => sensationsMap; set => sensationsMap = value; }
@@ -273,7 +276,7 @@ namespace OWO_BladeAndSorcery
 
         #endregion
 
-        #region StringBow loop
+        #region StringBow
         public void StartStringBow()
         {            
             if (stringBowIsActive) return;
@@ -295,6 +298,62 @@ namespace OWO_BladeAndSorcery
                 await Task.Delay(250);
             }
         }
+        #endregion
+
+        #region Climb
+
+        public void StartClimb(bool isRight)
+        {
+            if (isRight)
+                climbRIsActive = true;
+
+            if (!isRight)
+                climbLIsActive = true;
+
+            if (!telekinesisIsActive)
+                ClimbFuncAsync();
+
+            climbIsActive = true;
+        }
+
+        public void StopClimb(bool isRight)
+        {
+            if (isRight)
+            {
+                climbRIsActive = false;
+            }
+            else
+            {
+                climbLIsActive = false;
+            }
+        }
+
+        public async Task ClimbFuncAsync()
+        {
+            string musclesToFeel = "";
+
+            while (climbRIsActive || climbLIsActive)
+            {
+                if (climbRIsActive && climbLIsActive)
+                {
+                    musclesToFeel = "Both Arms";
+                }
+                else
+                {
+                    if (climbRIsActive)
+                        musclesToFeel = "Right Arm";
+
+                    if (climbLIsActive)
+                        musclesToFeel = "Left Arm";
+                }
+
+                FeelWithMuscles("Climbing", musclesToFeel);
+                await Task.Delay(400);
+            }
+
+            climbIsActive = false;
+        }
+
         #endregion
 
         #region Swimming

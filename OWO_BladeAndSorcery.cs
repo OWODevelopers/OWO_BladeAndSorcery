@@ -203,12 +203,14 @@ namespace OWO_BladeAndSorcery
                     if (!leftHandClimbing)
                     {
                         leftHandClimbing = true;
+                        owoSkin.StartClimb(false);
                         owoSkin.LOG($"ESCALADA IZQUIERDA", "EVENT");
                     }
                 }
                 else if (leftHandClimbing)
                 {
                     leftHandClimbing = false;
+                    owoSkin.StopClimb(false);
                     owoSkin.LOG($"PARAR ESCALADA IZQUIERDA", "EVENT");
                 }
 
@@ -218,13 +220,14 @@ namespace OWO_BladeAndSorcery
                     if (!rightHandClimbing)
                     {
                         rightHandClimbing = true;
+                        owoSkin.StartClimb(true);
                         owoSkin.LOG($"ESCALADA DERECHA", "EVENT");
-
                     }
                 }
                 else if (rightHandClimbing)
                 {
                     rightHandClimbing = false;
+                    owoSkin.StopClimb(true);
                     owoSkin.LOG($"PARAR ESCALADA DERECHA", "EVENT");
                 }
 
