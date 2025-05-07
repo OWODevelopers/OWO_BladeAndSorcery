@@ -179,6 +179,19 @@ namespace OWO_BladeAndSorcery
 
         #region Prueba
 
+        [HarmonyPatch(typeof(PlayerFoot), "Kick")]
+        public class OnKick
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.LOG("Kick","EVENT");
+                //owoSkin.Feel("Kick",2);
+            }
+        }
+
         [HarmonyPatch(typeof(Player), "ManagedUpdate")]
         public class OnPlayerUpdate
         {
@@ -242,7 +255,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Item item, CreatureMouthRelay mouthRelay)
             {
                 if (!mouthRelay.creature.player) return;
-                owoSkin.Feel($"Eating");
+                owoSkin.Feel("Eating");
             }
         }
 
