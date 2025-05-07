@@ -202,6 +202,7 @@ namespace OWO_BladeAndSorcery
         public void StopAllHapticFeedback()
         {
             StopSwimming();
+            StopStringBow();
             StopTelekinesis(true);
             StopTelekinesis(false);
 
