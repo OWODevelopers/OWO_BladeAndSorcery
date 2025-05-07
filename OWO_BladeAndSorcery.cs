@@ -107,7 +107,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(bool active)
             {
-                if (!canJump || !active) return;
+                if (!owoSkin.CanFeel() || !canJump || !active) return;
                 owoSkin.Feel("Jump");
                 canJump = false;
             }
@@ -119,8 +119,10 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(Vector3 velocity)
             {
+                if (!owoSkin.CanFeel()) return;
+
                 canJump = true;
-                if (velocity.magnitude >= 0.5f)
+                if (velocity.magnitude >= 0.9f)
                     //intensity per velocity(?
                     owoSkin.Feel("Landing");
             }
