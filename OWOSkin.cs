@@ -15,8 +15,8 @@ namespace OWO_BladeAndSorcery
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
         private Dictionary<String, Sensation> sensationsMap = new Dictionary<String, Sensation>();
-        private Muscle[] rightArm = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
-        private Muscle[] leftArm = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
+        private Muscle[] rightArmMuscles = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
+        private Muscle[] leftArmMuscles = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
 
         private bool telekinesisIsActive = false;
         private bool telekinesisLIsActive = false;
@@ -155,6 +155,25 @@ namespace OWO_BladeAndSorcery
                 }
 
                 OWO.Send(toSend.WithPriority(Priority));
+            }
+
+            else LOG("Feedback not registered: " + key, "OWO-SENSATION");
+        }
+
+        public void FeelWithArm(String key, int Priority = 0, int intensity = 0, bool rightArm = true)
+        {
+            Muscle[] muscles = rightArm ? rightArmMuscles : leftArmMuscles;
+
+            if (SensationsMap.ContainsKey(key))
+            {
+                if (intensity != 0)
+                {
+                    OWO.Send(SensationsMap[key].WithMuscles(muscles.WithIntensity(intensity)).WithPriority(Priority));
+                }
+                else
+                {
+                    OWO.Send(SensationsMap[key].WithMuscles(muscles).WithPriority(Priority));
+                }
             }
 
             else LOG("Feedback not registered: " + key, "OWO-SENSATION");
