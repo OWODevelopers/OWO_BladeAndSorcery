@@ -128,20 +128,6 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        #endregion
-
-        [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
-        public class OnOpenInventory
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnOpenInventory", "EVENT");
-            }
-        }
-
-        #region Prueba
-
         [HarmonyPatch(typeof(BowString), "ManagedUpdate")]
         public class OnManagedUpdateBow
         {
@@ -150,7 +136,7 @@ namespace OWO_BladeAndSorcery
             {
                 //owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
                 if (!owoSkin.CanFeel()) return;
-                
+
                 owoSkin.bowRightArm = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right";
 
                 if (__instance.currentPullRatio > 0.3f)
@@ -177,6 +163,20 @@ namespace OWO_BladeAndSorcery
                     owoSkin.StopStringBow();
             }
         }
+
+        #endregion
+
+        [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
+        public class OnOpenInventory
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.LOG($"OnOpenInventory", "EVENT");
+            }
+        }
+
+        #region Prueba
 
         [HarmonyPatch(typeof(Player), "ManagedUpdate")]
         public class OnPlayerUpdate
