@@ -198,12 +198,19 @@ namespace OWO_BladeAndSorcery
         public class OnSpellFire
         {
             [HarmonyPostfix]
-            public static void Postfix()
+            public static void Postfix(SpellCastCharge __instance)
             {
+                //Evento de cargar un hechizo, se llama al cargar y al parar de cargar
+                //Este sera un bucle para poder llamar a una mano, la otra o ambas
+                //Por cada hechizo (derivados de la clase spellCastCharge) se tiene que usar su método Throw con sensaciones diferentes.
+
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.LOG("Spell Fire","EVENT");
-                //owoSkin.Feel("Spell",2);
+                Side actualHand = __instance.spellCaster.ragdollHand.side;
+                owoSkin.StartSpell(actualHand == Side.Right);
+
+                if (owoSkin.spellRIsActive && actualHand == Side.Right) owoSkin.StopSpell(true);
+                if (owoSkin.spellLIsActive && actualHand == Side.Left) owoSkin.StopSpell(false);
             }
         }
 
@@ -211,12 +218,11 @@ namespace OWO_BladeAndSorcery
         public class OnSpellThrow
         {
             [HarmonyPostfix]
-            public static void Postfix()
+            public static void Postfix(SpellCastCharge __instance)
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.LOG("Spell Throw", "EVENT");
-                //owoSkin.Feel("Spell",2);
+                owoSkin.StopSpell(__instance.spellCaster.ragdollHand.side == Side.Right);
             }
         }
 

@@ -15,8 +15,10 @@ namespace OWO_BladeAndSorcery
         public bool stringBowIsActive = false;
         public bool bowRightArm = true;
         public int stringBowIntensity = 40;
-        private bool suitEnabled = false;
+        public bool spellLIsActive = false;
+        public bool spellRIsActive = false;
 
+        private bool suitEnabled = false;
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
         private Dictionary<String, Sensation> sensationsMap = new Dictionary<String, Sensation>();
         private Dictionary<String, Muscle[]> muscleMap = new Dictionary<String, Muscle[]>();
@@ -27,6 +29,7 @@ namespace OWO_BladeAndSorcery
         private bool climbIsActive = false;
         private bool climbLIsActive = false;
         private bool climbRIsActive = false;
+        private bool spellIsActive = false;        
         private bool swimmingIsActive = false;
 
         public Dictionary<string, Sensation> SensationsMap { get => sensationsMap; set => sensationsMap = value; }
@@ -352,6 +355,63 @@ namespace OWO_BladeAndSorcery
             }
 
             climbIsActive = false;
+        }
+
+        #endregion        
+
+        #region Spell
+
+        public void StartSpell(bool isRight)
+        {
+            if (isRight)
+                spellRIsActive = true;
+
+            if (!isRight)
+                spellLIsActive = true;
+
+
+            if (!spellIsActive)
+                SpellFuncAsync();
+
+            spellIsActive = true;
+        }
+
+        public void StopSpell(bool isRight)
+        {
+            if (isRight)
+            {
+                spellRIsActive = false;
+            }
+            else
+            {
+                spellLIsActive = false;
+            }
+        }
+
+        public async Task SpellFuncAsync()
+        {
+            string musclesToFeel = "";
+
+            while (spellRIsActive || spellLIsActive)
+            {
+                if (spellRIsActive && spellLIsActive)
+                {
+                    musclesToFeel = "Both Arms";
+                }
+                else
+                {
+                    if (spellRIsActive)
+                        musclesToFeel = "Right Arm";
+
+                    if (spellLIsActive)
+                        musclesToFeel = "Left Arm";
+                }
+
+                FeelWithMuscles("Spell", musclesToFeel);
+                await Task.Delay(400);
+            }
+
+            spellIsActive = false;
         }
 
         #endregion
