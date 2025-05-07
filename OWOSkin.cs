@@ -10,18 +10,20 @@ namespace OWO_BladeAndSorcery
 {
     public class OWOSkin
     {
-        public Dictionary<String, Sensation> SensationsMap = new Dictionary<String, Sensation>();
-        private Muscle[] rightArm = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
-        private Muscle[] leftArm = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
         public bool playing = false;
         private bool suitEnabled = false;
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
+        private Dictionary<String, Sensation> sensationsMap = new Dictionary<String, Sensation>();
+        private Muscle[] rightArm = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
+        private Muscle[] leftArm = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
 
         private bool telekinesisIsActive = false;
         private bool telekinesisLIsActive = false;
         private bool telekinesisRIsActive = false;
         private bool swimmingIsActive = false;
+
+        public Dictionary<string, Sensation> SensationsMap { get => sensationsMap; set => sensationsMap = value; }
 
         public OWOSkin()
         {
