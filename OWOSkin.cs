@@ -11,6 +11,8 @@ namespace OWO_BladeAndSorcery
     public class OWOSkin
     {
         public Dictionary<String, Sensation> SensationsMap = new Dictionary<String, Sensation>();
+        private Muscle[] rightArm = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
+        private Muscle[] leftArm = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
         public bool playing = false;
         private bool suitEnabled = false;
 
