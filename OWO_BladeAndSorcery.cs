@@ -150,27 +150,6 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        //funciona pero lo mismo no nos sirve cuando nos dan
-        [HarmonyPatch(typeof(EventManager), "InvokeCreatureAttack")]
-        public class OnInvokeCreatureAttack
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Creature attacker, Creature targetCreature, Transform targetTransform, BrainModuleAttack.AttackType type, BrainModuleAttack.AttackStage stage)
-            {
-                owoSkin.LOG($"InvokeCreatureAttack player:{targetCreature.isPlayer}", "EVENT");
-            }
-        }
-
-        [HarmonyPatch(typeof(Creature), "Awake")]
-        public class OnCreatueAwake
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"Creature Awake", "EVENT");
-            }
-        }
-
         #region Prueba
 
         [HarmonyPatch(typeof(BowString), "ManagedUpdate")]
