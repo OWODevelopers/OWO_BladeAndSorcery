@@ -130,16 +130,6 @@ namespace OWO_BladeAndSorcery
 
         #endregion
 
-        [HarmonyPatch(typeof(UIInventory), "Awake")]
-        public class OnOpenInventoryAwake
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"Inventory Awake", "EVENT");
-            }
-        }
-
         [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
         public class OnOpenInventory
         {
