@@ -136,8 +136,9 @@ namespace OWO_BladeAndSorcery
             {
                 //owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
                 if (!owoSkin.CanFeel()) return;
-
-                owoSkin.bowRightArm = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right";
+                
+                if (!owoSkin.stringBowIsActive)
+                    owoSkin.bowRightArm = __instance.stringHandle.handlers[0].playerHand.side == Side.Right;
 
                 if (__instance.currentPullRatio > 0.3f)
                 {
@@ -241,8 +242,8 @@ namespace OWO_BladeAndSorcery
                 owoSkin.Feel($"Eating");
             }
         }
-        [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
 
+        [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
         public class OnDamage
         {
             [HarmonyPrefix]
