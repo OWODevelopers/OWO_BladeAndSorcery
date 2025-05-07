@@ -160,11 +160,18 @@ namespace OWO_BladeAndSorcery
             {
                 //owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
 
-                if(!owoSkin.CanFeel() || __instance.currentPullRatio < 0.1f) return;
+                if (!owoSkin.CanFeel()) return;
 
-                string muscles = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right" ? "Right Arm" : "Left Arm";
-
-                owoSkin.FeelWithMuscles("Bow Pull");
+                if (__instance.currentPullRatio < 0.3f)
+                {
+                    string muscles = __instance.stringHandle.handlers[0].playerHand.side.ToString() == "right" ? "Right Arm" : "Left Arm";
+                    owoSkin.stringBowIntensity = Mathf.FloorToInt(Mathf.Clamp(__instance.currentPullRatio * 100.0f, 40, 100));
+                    owoSkin.StartStringBow(muscles);
+                }
+                else if (owoSkin.stringBowIsActive)
+                {
+                    owoSkin.StopStringBow();
+                }
             }
         }
 

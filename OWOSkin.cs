@@ -12,6 +12,8 @@ namespace OWO_BladeAndSorcery
     public class OWOSkin
     {
         public bool playing = false;
+        public bool stringBowIsActive = false;
+        public int stringBowIntensity = 40;
         private bool suitEnabled = false;
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
@@ -267,6 +269,30 @@ namespace OWO_BladeAndSorcery
             telekinesisIsActive = false;
         }
 
+        #endregion
+
+        #region StringBow loop
+        public void StartStringBow(string arm)
+        {
+            if (stringBowIsActive) return;
+
+            stringBowIsActive = true;
+            StringBowFuncAsync(arm);
+        }
+
+        public void StopStringBow()
+        {
+            stringBowIsActive = false;
+        }
+
+        public async Task StringBowFuncAsync(string arm)
+        {
+            while (stringBowIsActive)
+            {
+                FeelWithMuscles("Bow Pull", arm ,1, stringBowIntensity);                
+                await Task.Delay(250);
+            }
+        }
         #endregion
 
         #region Swimming
