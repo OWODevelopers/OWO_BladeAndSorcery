@@ -191,6 +191,32 @@ namespace OWO_BladeAndSorcery
                 //owoSkin.Feel("Kick",2);
             }
         }
+        
+        [HarmonyPatch(typeof(SpellCastCharge), "Fire")]
+        public class OnSpellFire
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.LOG("Spell Fire","EVENT");
+                //owoSkin.Feel("Spell",2);
+            }
+        }
+
+        [HarmonyPatch(typeof(SpellCastCharge), "Throw")]
+        public class OnSpellThrow
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.LOG("Spell Throw", "EVENT");
+                //owoSkin.Feel("Spell",2);
+            }
+        }
 
         [HarmonyPatch(typeof(Player), "ManagedUpdate")]
         public class OnPlayerUpdate
