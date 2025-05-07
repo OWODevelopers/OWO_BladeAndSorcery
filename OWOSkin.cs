@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -15,8 +16,7 @@ namespace OWO_BladeAndSorcery
 
         private string modPath = "BladeAndSorcery_Data\\StreamingAssets\\Mods\\OWO";
         private Dictionary<String, Sensation> sensationsMap = new Dictionary<String, Sensation>();
-        private Muscle[] rightArmMuscles = {Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50)};
-        private Muscle[] leftArmMuscles = {Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50)};
+        private Dictionary<String, Muscle[]> muscleMap = new Dictionary<String, Muscle[]>();
 
         private bool telekinesisIsActive = false;
         private bool telekinesisLIsActive = false;
@@ -69,7 +69,17 @@ namespace OWO_BladeAndSorcery
                 catch (Exception e) { LOG(e.Message); }
             }
         }
+        private void DefineAllMuscleGroups()
+        {
+            Muscle[] leftArm = { Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50) };
+            muscleMap.Add("Left Arm", leftArm);
+            
+            Muscle[] rightArm = { Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50) };
+            muscleMap.Add("Right Arm", leftArm);
 
+            Muscle[] bothArms = leftArm.Concat(rightArm).ToArray();
+            muscleMap.Add("Both Arms", bothArms);
+        }
         private async void InitializeOWO()
         {
             LOG("Initializing OWO skin");
@@ -160,9 +170,19 @@ namespace OWO_BladeAndSorcery
             else LOG("Feedback not registered: " + key, "OWO-SENSATION");
         }
 
-        public void FeelWithArm(String key, int Priority = 0, int intensity = 0, bool rightArm = true)
+        public void FeelWithMuscles(String key, String muscleKey = "Right Arm", int Priority = 0, int intensity = 0)
         {
-            Muscle[] muscles = rightArm ? rightArmMuscles : leftArmMuscles;
+            Muscle[] muscles = muscleMap[muscleKey];
+
+            if (muscleMap.ContainsKey(muscleKey))
+            {
+                muscles = muscleMap[muscleKey];
+            }
+            else
+            {
+                LOG("MuscleGroup not registered: " + muscleKey, "OWO-SENSATION");
+                return;
+            }
 
             if (SensationsMap.ContainsKey(key))
             {
