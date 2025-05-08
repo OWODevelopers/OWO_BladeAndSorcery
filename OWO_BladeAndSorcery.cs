@@ -224,10 +224,6 @@ namespace OWO_BladeAndSorcery
                     owoSkin.StartSpell(false);
                 else
                     owoSkin.StopSpell(false);
-
-
-                //if (owoSkin.spellRIsActive && actualHand == Side.Right) owoSkin.StopSpell(true);
-                //if (owoSkin.spellLIsActive && actualHand == Side.Left) owoSkin.StopSpell(false);
             }
         }
 
@@ -268,7 +264,20 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.StopSpell(__instance.spellCaster.ragdollHand.side == Side.Right);
+                owoSkin.LOG($"Throw single spell {__instance.spellCaster.ragdollHand.side}","EVENT");
+                owoSkin.FeelWithMuscles("Throw spell", __instance.spellCaster.ragdollHand.side == Side.Right ? "Right Arm" : "Left Arm", 2);
+            }
+        }
+
+        [HarmonyPatch(typeof(SpellMergeData), "Throw")]
+        public class OnMergeThrow
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                owoSkin.FeelWithMuscles("Throw spell", "Both Arms", 2);
             }
         }
 
