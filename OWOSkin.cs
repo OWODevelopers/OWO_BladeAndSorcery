@@ -81,6 +81,18 @@ namespace OWO_BladeAndSorcery
         }
         private void DefineAllMuscleGroups()
         {
+            Muscle[] leftBack = { Muscle.Dorsal_L.WithIntensity(100)};
+            muscleMap.Add("Left Back", leftBack);
+            
+            Muscle[] rightBack = { Muscle.Dorsal_R.WithIntensity(100)};
+            muscleMap.Add("Right Back", rightBack); 
+            
+            Muscle[] leftHip = { Muscle.Lumbar_L.WithIntensity(100), Muscle.Abdominal_L.WithIntensity(100) };
+            muscleMap.Add("Left Hip", leftHip);
+            
+            Muscle[] rightHip = { Muscle.Lumbar_R.WithIntensity(100), Muscle.Abdominal_R.WithIntensity(100) };
+            muscleMap.Add("Right Hip", rightHip); 
+            
             Muscle[] leftArm = { Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50) };
             muscleMap.Add("Left Arm", leftArm);
             
