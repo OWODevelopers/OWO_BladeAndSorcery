@@ -1,10 +1,8 @@
 ﻿using HarmonyLib;
 using System;
-using System.Reflection;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
-using static ThunderRoad.ModManager;
 
 
 namespace OWO_BladeAndSorcery
@@ -138,7 +136,7 @@ namespace OWO_BladeAndSorcery
             {
                 //owoSkin.LOG($"BowString ManagedUpdate Hand: {__instance.stringHandle.handlers[0].playerHand.side} - String Pull: {__instance.currentPullRatio}", "EVENT");
                 if (!owoSkin.CanFeel()) return;
-                
+
                 if (!owoSkin.stringBowIsActive)
                     owoSkin.bowRightArm = __instance.stringHandle.handlers[0].playerHand.side == Side.Right;
 
@@ -181,7 +179,7 @@ namespace OWO_BladeAndSorcery
 
         #region Prueba
 
-        [HarmonyPatch(typeof(PlayerFoot), "Kick" , new Type[] { typeof(bool) })]
+        [HarmonyPatch(typeof(PlayerFoot), "Kick", new Type[] { typeof(bool) })]
         public class OnKick
         {
             [HarmonyPostfix]
@@ -189,16 +187,16 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.LOG("Kick","EVENT");
+                owoSkin.LOG("Kick", "EVENT");
                 //owoSkin.Feel("Kick",2);
             }
         }
-        
+
         [HarmonyPatch(typeof(SpellCastCharge), "Fire")]
         public class OnSpellFire
         {
             [HarmonyPostfix]
-            public static void Postfix(SpellCastCharge __instance)
+            public static void Postfix(SpellCastCharge __instance, bool active)
             {
                 //Evento de cargar un hechizo, se llama al cargar y al parar de cargar
                 //Este sera un bucle para poder llamar a una mano, la otra o ambas
@@ -207,10 +205,58 @@ namespace OWO_BladeAndSorcery
                 if (!owoSkin.CanFeel()) return;
 
                 Side actualHand = __instance.spellCaster.ragdollHand.side;
-                owoSkin.StartSpell(actualHand == Side.Right);
 
-                if (owoSkin.spellRIsActive && actualHand == Side.Right) owoSkin.StopSpell(true);
-                if (owoSkin.spellLIsActive && actualHand == Side.Left) owoSkin.StopSpell(false);
+                owoSkin.LOG($"SPELL - ACTIVE: {active} -- order: {__instance.order} - wheelDisplayName: {__instance.wheelDisplayName}, castDescription - {__instance.castDescription}", "EVENT");
+                //__instance.wheelDisplayName || __instance.order
+                //FIRE - {SpellFire} || 0
+                //LIGHTNING - {SpellLightning} || 1
+                //GRAVITY - {SpellGravity} || 2
+                //CUP - Cup || 3
+
+                if (actualHand == Side.Right)
+                {
+                    if (active)
+                        owoSkin.StartSpell(true);
+                    else
+                        owoSkin.StopSpell(true);
+                }
+                else if (active)
+                    owoSkin.StartSpell(false);
+                else
+                    owoSkin.StopSpell(false);
+
+
+                //if (owoSkin.spellRIsActive && actualHand == Side.Right) owoSkin.StopSpell(true);
+                //if (owoSkin.spellLIsActive && actualHand == Side.Left) owoSkin.StopSpell(false);
+            }
+        }
+
+        [HarmonyPatch(typeof(SpellMergeData), "Merge")]
+        public class OnSpellMerge
+        {
+            [HarmonyPostfix]
+            public static void Postfix(SpellMergeData __instance, bool active)
+            {
+                if (!owoSkin.CanFeel()) return;
+
+                if (active)
+                {
+                    owoSkin.StartSpell(true);
+                    owoSkin.StartSpell(false);
+                }
+                else
+                {
+                    owoSkin.StopSpell(true);
+                    owoSkin.StopSpell(false);
+                }
+
+
+                owoSkin.LOG($"SPELL - ACTIVE: {active} -- description: {__instance.description} - id: {__instance.id}", "EVENT");
+                //__instance.description
+                //FIRE - FireMerge
+                //LIGHTNING - LightningMerge
+                //GRAVITY - GravityMerge
+                //CUP - SpellMergeTest
             }
         }
 
@@ -333,7 +379,7 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        [HarmonyPatch(typeof(Wearable), "UnEquip", new Type[] { typeof(string), typeof(Action<Item>)})]
+        [HarmonyPatch(typeof(Wearable), "UnEquip", new Type[] { typeof(string), typeof(Action<Item>) })]
         public class OnUnEquip
         {
             [HarmonyPostfix]
@@ -401,7 +447,7 @@ namespace OWO_BladeAndSorcery
 
                 Vector3 velocity = (__instance.checkMinVelocity ? result : Vector3.zero);
 
-                owoSkin.LOG($"VELOCITY COLLISION MELEE {velocity.magnitude}", "EVENT");
+                //owoSkin.LOG($"VELOCITY COLLISION MELEE {velocity.magnitude}", "EVENT");
 
             }
         }
