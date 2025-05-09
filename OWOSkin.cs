@@ -29,7 +29,8 @@ namespace OWO_BladeAndSorcery
         private bool climbIsActive = false;
         private bool climbLIsActive = false;
         private bool climbRIsActive = false;
-        private bool spellIsActive = false;        
+        private bool spellIsActive = false;
+        private bool slowMotionIsActive = false;
         private bool swimmingIsActive = false;
 
         public Dictionary<string, Sensation> SensationsMap { get => sensationsMap; set => sensationsMap = value; }
@@ -53,7 +54,7 @@ namespace OWO_BladeAndSorcery
             catch (Exception ex)
             {
                 Debug.Log($"[OWO-WARNING]{ex}");
-            }        
+            }
         }
 
         #region Skin Configuration
@@ -83,31 +84,31 @@ namespace OWO_BladeAndSorcery
         {
             Muscle[] leftDamage = { Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L };
             muscleMap.Add("Left Damage", leftDamage);
-            
+
             Muscle[] rightDamage = { Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L };
             muscleMap.Add("Right Damage", rightDamage);
-            
+
             Muscle[] frontDamage = Muscle.Front;
             muscleMap.Add("Front Damage", frontDamage);
-            
+
             Muscle[] backDamage = Muscle.Back;
             muscleMap.Add("Back Damage", backDamage);
-            
-            Muscle[] leftBack = { Muscle.Dorsal_L.WithIntensity(100)};
+
+            Muscle[] leftBack = { Muscle.Dorsal_L.WithIntensity(100) };
             muscleMap.Add("Left Back", leftBack);
-            
-            Muscle[] rightBack = { Muscle.Dorsal_R.WithIntensity(100)};
-            muscleMap.Add("Right Back", rightBack); 
-            
+
+            Muscle[] rightBack = { Muscle.Dorsal_R.WithIntensity(100) };
+            muscleMap.Add("Right Back", rightBack);
+
             Muscle[] leftHip = { Muscle.Lumbar_L.WithIntensity(100), Muscle.Abdominal_L.WithIntensity(100) };
             muscleMap.Add("Left Hip", leftHip);
-            
+
             Muscle[] rightHip = { Muscle.Lumbar_R.WithIntensity(100), Muscle.Abdominal_R.WithIntensity(100) };
-            muscleMap.Add("Right Hip", rightHip); 
-            
+            muscleMap.Add("Right Hip", rightHip);
+
             Muscle[] leftArm = { Muscle.Arm_L.WithIntensity(100), Muscle.Pectoral_L.WithIntensity(70), Muscle.Dorsal_L.WithIntensity(50) };
             muscleMap.Add("Left Arm", leftArm);
-            
+
             Muscle[] rightArm = { Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(70), Muscle.Dorsal_R.WithIntensity(50) };
             muscleMap.Add("Right Arm", rightArm);
 
@@ -285,7 +286,7 @@ namespace OWO_BladeAndSorcery
                 {
                     musclesToFeel = "Both Arms";
                 }
-                else 
+                else
                 {
                     if (telekinesisRIsActive)
                         musclesToFeel = "Right Arm";
@@ -305,7 +306,7 @@ namespace OWO_BladeAndSorcery
 
         #region StringBow
         public void StartStringBow()
-        {            
+        {
             if (stringBowIsActive) return;
 
             stringBowIsActive = true;
@@ -321,7 +322,7 @@ namespace OWO_BladeAndSorcery
         {
             while (stringBowIsActive)
             {
-                FeelWithMuscles("Bow Pull", bowRightArm ? "Right Arm" : "Left Arm", 1, stringBowIntensity);                
+                FeelWithMuscles("Bow Pull", bowRightArm ? "Right Arm" : "Left Arm", 1, stringBowIntensity);
                 await Task.Delay(250);
             }
         }
@@ -452,7 +453,7 @@ namespace OWO_BladeAndSorcery
 
         public void StopSwimming()
         {
-           swimmingIsActive = false;
+            swimmingIsActive = false;
         }
 
         public async Task SwimmingFuncAsync()
@@ -460,6 +461,32 @@ namespace OWO_BladeAndSorcery
             while (swimmingIsActive)
             {
                 Feel("Swimming", 1);
+                await Task.Delay(1000);
+            }
+        }
+
+        #endregion
+
+        #region Slow Motion
+
+        public void StartSlowMotion()
+        {
+            if (slowMotionIsActive) return;
+
+            slowMotionIsActive = true;
+            SlowMotionFuncAsync();
+        }
+
+        public void StopSlowMotion()
+        {
+            slowMotionIsActive = false;
+        }
+
+        public async Task SlowMotionFuncAsync()
+        {
+            while (slowMotionIsActive)
+            {
+                Feel("Slow Motion", 1);
                 await Task.Delay(1000);
             }
         }

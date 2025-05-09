@@ -167,30 +167,16 @@ namespace OWO_BladeAndSorcery
             }
         }
 
-        #endregion
-
-        [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
-        public class OnOpenInventory
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnOpenInventory", "EVENT");
-            }
-        }
-
-        #region Prueba
-        
-        [HarmonyPatch(typeof(PlayerFoot), "Kick", new System.Type[] {typeof(Transform), typeof(Vector3) })]
+        [HarmonyPatch(typeof(PlayerFoot), "Kick", new System.Type[] { typeof(Transform), typeof(Vector3) })]
         public class OnKick
         {
             [HarmonyPrefix]
             public static void Prefix(PlayerFoot __instance, Transform target, Vector3 targetLocalPos)
             {
-                if (!owoSkin.CanFeel()  || !__instance.player.isLocal) return;
+                if (!owoSkin.CanFeel() || !__instance.player.isLocal) return;
                 if (!__instance.isAutoKicking && (bool)__instance.ragdollFoot)
                     owoSkin.Feel("Kick", 2);
-                
+
             }
         }
 
@@ -228,7 +214,6 @@ namespace OWO_BladeAndSorcery
                     owoSkin.StopSpell(false);
             }
         }
-
         [HarmonyPatch(typeof(SpellMergeData), "Merge")]
         public class OnSpellMerge
         {
@@ -283,7 +268,7 @@ namespace OWO_BladeAndSorcery
         }
 
         [HarmonyPatch(typeof(Player), "ManagedUpdate")]
-        public class OnPlayerUpdate
+        public class OnPlayerUpdateClimbing
         {
             public static bool leftHandClimbing = false;
             public static bool rightHandClimbing = false;
@@ -295,14 +280,14 @@ namespace OWO_BladeAndSorcery
 
                 try
                 {
-                Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left) ;
-                Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
+                    Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left);
+                    Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
 
-                bool isGripping = Player.local.handLeft.ragdollHand.climb != null && Player.local.handLeft.ragdollHand.climb.isGripping;
-                bool isGripping2 = Player.local.handRight.ragdollHand.climb != null && Player.local.handRight.ragdollHand.climb.isGripping;
+                    bool isGripping = Player.local.handLeft.ragdollHand.climb != null && Player.local.handLeft.ragdollHand.climb.isGripping;
+                    bool isGripping2 = Player.local.handRight.ragdollHand.climb != null && Player.local.handRight.ragdollHand.climb.isGripping;
 
-                bool isLadder = Player.local.handLeft.ragdollHand.grabbedHandle != null && Player.local.handLeft.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
-                bool isLadder2 = Player.local.handRight.ragdollHand.grabbedHandle != null && Player.local.handRight.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
+                    bool isLadder = Player.local.handLeft.ragdollHand.grabbedHandle != null && Player.local.handLeft.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
+                    bool isLadder2 = Player.local.handRight.ragdollHand.grabbedHandle != null && Player.local.handRight.ragdollHand.grabbedHandle.data.id.ToLowerInvariant().Contains("ladder");
 
                     if (isGripping || isLadder || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handLeftEnabled && __instance.creature.ragdoll.ik.handLeftTarget != null && heldItem == null && __instance.creature.equipment.GetHeldHandle(Side.Left) != null && !__instance.creature.equipment.GetHeldHandle(Side.Left).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Left) - 1f) < 0.0001f))
                     {
@@ -513,6 +498,52 @@ namespace OWO_BladeAndSorcery
                 owoSkin.Feel($"Poison Drinking");
             }
         }
+
+        #endregion
+
+        [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
+        public class OnOpenInventory
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.LOG($"OnOpenInventory", "EVENT");
+            }
+        }
+
+        [HarmonyPatch(typeof(SpellPowerSlowTime), "SlowTime")]
+        public class OnSpellSlowtimeUse
+        {
+            [HarmonyPostfix]
+            public static void Postfix(bool __result)
+            {
+                if (!owoSkin.CanFeel()) return;
+                if (__result)
+                    owoSkin.StartSlowMotion();
+            }
+        }
+        
+        [HarmonyPatch(typeof(SpellPowerSlowTime), "StopSlowTime")]
+        public class OnSpellStopSlowtimeUse
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.StopSlowMotion();
+            }
+        }
+
+
+
+
+
+        #region Prueba
+
+
+
+
+
+
 
 
 
