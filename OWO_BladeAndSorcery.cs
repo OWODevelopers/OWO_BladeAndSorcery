@@ -180,15 +180,17 @@ namespace OWO_BladeAndSorcery
         }
 
         #region Prueba
-
-        [HarmonyPatch(typeof(PlayerFoot), "SetFootTracking")]
+        
+        [HarmonyPatch(typeof(PlayerFoot), "Kick", new System.Type[] {typeof(Transform), typeof(Vector3) })]
         public class OnKick
         {
-            [HarmonyPostfix]
-            public static void Postfix(PlayerFoot __instance, bool active)
+            [HarmonyPrefix]
+            public static void Prefix(PlayerFoot __instance, Transform target, Vector3 targetLocalPos)
             {
-                if (!owoSkin.CanFeel() || !active || !__instance.player.isLocal) return;
-                owoSkin.Feel("Kick", 2);
+                if (!owoSkin.CanFeel()  || !__instance.player.isLocal) return;
+                if (!__instance.isAutoKicking && (bool)__instance.ragdollFoot)
+                    owoSkin.Feel("Kick", 2);
+                
             }
         }
 
