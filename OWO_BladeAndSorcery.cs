@@ -362,7 +362,45 @@ namespace OWO_BladeAndSorcery
             {
                 if (!(bool)__instance.player) return;
                 float damage = __state - __instance.currentHealth;
-                owoSkin.LOG($"Creature Damage - damage: {damage}", "EVENT");
+                float angle;
+
+                Creature creature = collisionInstance.sourceColliderGroup?.collisionHandler.item?.lastHandler?.creature;
+                if (!creature)
+                {
+                    creature = collisionInstance.casterHand?.mana.creature;
+                }
+
+                try
+                {
+                    var asdf = Player.local.creature.transform.forward.ToXZ();
+                    var fdaa = -creature.transform.forward.ToXZ();
+                    owoSkin.LOG($"{asdf}");
+                    owoSkin.LOG($"{fdaa}");
+
+                    angle = Vector3.SignedAngle(asdf, fdaa, Vector3.up);
+                    angle += 180f;
+
+                    switch (angle)
+                    {
+                        case float a when (a > 135 && a <= 225):
+                            owoSkin.FeelWithMuscles("Damage", "Front Damage"); //Front
+                            return;
+                        case float a when (a > 45 && a <= 135):
+                            owoSkin.FeelWithMuscles("Damage", "Right Damage"); //Right
+                            return;
+                        case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
+                            owoSkin.FeelWithMuscles("Damage", "Back Damage"); //Back
+                            return;
+                        case float a when (a > 225 && a <= 315):
+                            owoSkin.FeelWithMuscles("Damage", "Left Damage"); //Left
+                            return;
+                    }
+                }
+                catch (Exception)
+                {
+                    owoSkin.FeelWithMuscles("Damage", "Front Damage");
+                    return;
+                }
             }
         }
 
