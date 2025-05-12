@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Runtime.InteropServices;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
@@ -323,7 +324,6 @@ namespace OWO_BladeAndSorcery
                 }
                 catch (Exception)
                 {
-                    owoSkin.LOG($"UPS", "EVENT");
                 }
 
             }
@@ -522,7 +522,7 @@ namespace OWO_BladeAndSorcery
                     owoSkin.StartSlowMotion();
             }
         }
-        
+
         [HarmonyPatch(typeof(SpellPowerSlowTime), "StopSlowTime")]
         public class OnSpellStopSlowtimeUse
         {
@@ -540,39 +540,104 @@ namespace OWO_BladeAndSorcery
         #region Prueba
 
 
-
-
-
-
-
-
-
-        [HarmonyPatch(typeof(CollisionHandler), "OnCollisionEnter")]
-        public class OnCollisionEnter
+        [HarmonyPatch(typeof(RagdollHand), "OnHandCollision")]
+        public class OnPunch
         {
             [HarmonyPostfix]
-            public static void Postfix(CollisionHandler __instance, Collision collision)
+            public static void Postfix(RagdollHand __instance, CollisionInstance hit)
             {
+                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal) return;
 
-                ContactPoint contact = collision.GetContact(0);
-                Vector3 point = contact.point;
-                Collider otherCollider = contact.otherCollider;
-                ColliderGroup componentInParent2 = otherCollider.GetComponentInParent<ColliderGroup>();
+                Vector3 velocity = __instance.Velocity();
 
-                Vector3 result = __instance.CalculateLastPointVelocity(point);
-                Vector3 vector = componentInParent2?.collisionHandler?.CalculateLastPointVelocity(point) ?? Vector3.zero;
-                result.x -= vector.x;
-                result.y -= vector.y;
-                result.z -= vector.z;
+                owoSkin.LOG($"OnHandCollision hit - {velocity.magnitude}");
+                int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 40, 100));
 
-                Vector3 velocity = (__instance.checkMinVelocity ? result : Vector3.zero);
+                if (velocity.magnitude <= 2) return;
 
-                //owoSkin.LOG($"VELOCITY COLLISION MELEE {velocity.magnitude}", "EVENT");
-
+                owoSkin.FeelWithMuscles("Punch", __instance.side == Side.Right ? "Right Arm" : "Left Arm", 1, intensity);
             }
         }
 
+        [HarmonyPatch(typeof(RagdollHand), "Grab", new Type[] { typeof(Handle), typeof(HandlePose), typeof(float), typeof(bool), typeof(bool) })]
+        public class OnGrab
+        {
+            [HarmonyPostfix]
+            public static void Postfix(RagdollHand __instance, Handle handle)
+            {
+                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal) return;
 
+                owoSkin.LOG($"OnHandCollision Grab - {handle.item.name} -- {__instance.side} ");
+
+                foreach (CollisionHandler collisionHandler2 in handle.item.collisionHandlers)
+                {
+                    if (collisionHandler2 != null)
+                    {
+                        collisionHandler2.OnCollisionStartEvent += HandleHeldCollisionStart;
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(RagdollHand), "UnGrab")]
+        public class OnUnGrab
+        {
+            [HarmonyPrefix]
+            public static void Prefix(RagdollHand __instance)
+            {
+                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal) return;
+
+                owoSkin.LOG($"OnHandCollision UnGrab - {__instance.grabbedHandle.item.name} -- {__instance.side} ");
+
+                foreach (CollisionHandler collisionHandler2 in __instance.grabbedHandle.item.collisionHandlers)
+                {
+                    if (collisionHandler2 != null)
+                    {
+                        collisionHandler2.OnCollisionStartEvent -= HandleHeldCollisionStart;
+                    }
+                }
+            }
+        }
+
+        public static void HandleHeldCollisionStart(CollisionInstance collision)
+        {
+            Item item = collision.sourceColliderGroup.collisionHandler.item;
+            
+            ContactPoint contact = collision.startingCollision.GetContact(0);
+            Vector3 point = contact.point;
+            Collider otherCollider = contact.otherCollider;
+            ColliderGroup componentInParent2 = otherCollider.GetComponentInParent<ColliderGroup>();
+
+            Vector3 result = collision.sourceColliderGroup.collisionHandler.CalculateLastPointVelocity(point);
+            Vector3 vector = componentInParent2?.collisionHandler?.CalculateLastPointVelocity(point) ?? Vector3.zero;
+            result.x -= vector.x;
+            result.y -= vector.y;
+            result.z -= vector.z;
+
+            Vector3 velocity = (collision.sourceColliderGroup.collisionHandler.checkMinVelocity ? result : Vector3.zero);
+
+            string muscleSensation = "Right Arm";
+            owoSkin.LOG($"OnGrabbedItemCollision hit - {velocity.magnitude}");
+            if (velocity.magnitude <= 3) return;
+            for (int i = 0; i < item.handlers.Count; i++)
+            {
+                RagdollHand ragdollHand = item.handlers[i];
+                if ((bool)ragdollHand.playerHand)
+                {
+                    if (ragdollHand.playerHand.side == Side.Left)
+                    {
+                        muscleSensation = "Left Arm";
+                    }
+                    else
+                    {
+                        muscleSensation = "Right Arm";
+                    }
+                }
+            }
+
+            int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 40, 100));
+            owoSkin.FeelWithMuscles("Melee", muscleSensation, 1, intensity);
+        }
         #endregion
     }
 

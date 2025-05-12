@@ -232,10 +232,14 @@ namespace OWO_BladeAndSorcery
 
         public void StopAllHapticFeedback()
         {
-            StopSwimming();
             StopStringBow();
             StopTelekinesis(true);
             StopTelekinesis(false);
+            StopSlowMotion();
+            StopClimb(true);
+            StopClimb(false);
+            StopSpell(true);
+            StopSpell(false);
 
             OWO.Stop();
         }
@@ -437,32 +441,6 @@ namespace OWO_BladeAndSorcery
             }
 
             spellIsActive = false;
-        }
-
-        #endregion
-
-        #region Swimming
-
-        public void StartSwimming()
-        {
-            if (!swimmingIsActive)
-                SwimmingFuncAsync();
-
-            swimmingIsActive = true;
-        }
-
-        public void StopSwimming()
-        {
-            swimmingIsActive = false;
-        }
-
-        public async Task SwimmingFuncAsync()
-        {
-            while (swimmingIsActive)
-            {
-                Feel("Swimming", 1);
-                await Task.Delay(1000);
-            }
         }
 
         #endregion
