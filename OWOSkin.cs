@@ -15,6 +15,8 @@ namespace OWO_BladeAndSorcery
         public bool stringBowIsActive = false;
         public bool bowRightArm = true;
         public int stringBowIntensity = 40;
+        public int climbingLIntensity = 40;
+        public int climbingRIntensity = 40;
         public bool spellLIsActive = false;
         public bool spellRIsActive = false;
 
@@ -230,6 +232,17 @@ namespace OWO_BladeAndSorcery
             else LOG("Feedback not registered: " + key, "OWO-SENSATION");
         }
 
+        public void DynamicClimbing()
+        {
+            Muscle[] leftArm = { Muscle.Arm_L.WithIntensity(climbingLIntensity), Muscle.Pectoral_L.WithIntensity(Mathf.FloorToInt(climbingLIntensity * 0.7f)), Muscle.Dorsal_L.WithIntensity(Mathf.FloorToInt(climbingLIntensity*0.5f)) };
+            
+            Muscle[] rightArm = { Muscle.Arm_R.WithIntensity(100), Muscle.Pectoral_R.WithIntensity(Mathf.FloorToInt(climbingRIntensity*0.7f)), Muscle.Dorsal_R.WithIntensity(Mathf.FloorToInt(climbingRIntensity*0.5f)) };
+            
+            Muscle[] bothArms = leftArm.Concat(rightArm).ToArray();
+            muscleMap.Add("Both Arms Climbing", bothArms);
+        }
+
+
         public void StopAllHapticFeedback()
         {
             StopStringBow();
@@ -369,7 +382,8 @@ namespace OWO_BladeAndSorcery
             {
                 if (climbRIsActive && climbLIsActive)
                 {
-                    musclesToFeel = "Both Arms";
+                    musclesToFeel = "Both Arms Climbing";
+                    DynamicClimbing();
                 }
                 else
                 {
@@ -380,7 +394,7 @@ namespace OWO_BladeAndSorcery
                         musclesToFeel = "Left Arm";
                 }
 
-                FeelWithMuscles("Climbing", musclesToFeel);
+                FeelWithMuscles("Climbing", musclesToFeel, 2);
                 await Task.Delay(400);
             }
 

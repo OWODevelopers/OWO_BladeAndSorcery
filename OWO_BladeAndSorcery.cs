@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using System;
-using System.Runtime.InteropServices;
 using ThunderRoad;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
@@ -296,9 +295,12 @@ namespace OWO_BladeAndSorcery
                     {
                         if (!leftHandClimbing)
                         {
+                            float num = Math.Abs(Player.local.handLeft.transform.position.y - Player.local.head.transform.position.y);
+                            owoSkin.climbingLIntensity = Mathf.FloorToInt(Mathf.Clamp(num * 200, 40, 100));
+                            
                             leftHandClimbing = true;
                             owoSkin.StartClimb(false);
-                            owoSkin.LOG($"ESCALADA IZQUIERDA", "EVENT");
+                            owoSkin.LOG($"ESCALADA IZQUIERDA -- {num}", "EVENT");
                         }
                     }
                     else if (leftHandClimbing)
@@ -312,9 +314,11 @@ namespace OWO_BladeAndSorcery
                     {
                         if (!rightHandClimbing)
                         {
+                            float num2 = Math.Abs(Player.local.handRight.transform.position.y - Player.local.head.transform.position.y);
+                            owoSkin.climbingRIntensity = Mathf.FloorToInt(Mathf.Clamp(num2 * 200, 40, 100));
                             rightHandClimbing = true;
                             owoSkin.StartClimb(true);
-                            owoSkin.LOG($"ESCALADA DERECHA", "EVENT");
+                            owoSkin.LOG($"ESCALADA DERECHA {num2}", "EVENT");
                         }
                     }
                     else if (rightHandClimbing)
@@ -612,7 +616,7 @@ namespace OWO_BladeAndSorcery
         public static void HandleHeldCollisionStart(CollisionInstance collision)
         {
             Item item = collision.sourceColliderGroup.collisionHandler.item;
-            
+
             ContactPoint contact = collision.startingCollision.GetContact(0);
             Vector3 point = contact.point;
             Collider otherCollider = contact.otherCollider;
