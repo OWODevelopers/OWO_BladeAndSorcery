@@ -281,6 +281,8 @@ namespace OWO_BladeAndSorcery
 
                 try
                 {
+                    if (owoSkin.heartBeatIsActive || Player.local.creature.currentHealth >= 25) owoSkin.StopHeartBeat();
+
                     Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left);
                     Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
 
@@ -393,6 +395,14 @@ namespace OWO_BladeAndSorcery
                     owoSkin.FeelWithMuscles("Damage", "Front Damage");
                     return;
                 }
+
+                if (__instance.currentHealth <= 25) owoSkin.StartHeartBeat();
+
+                if (__instance.currentHealth <= 0)
+                {
+                    owoSkin.StopAllHapticFeedback();
+                    owoSkin.Feel("Death", 4);
+                }
             }
         }
 
@@ -410,10 +420,10 @@ namespace OWO_BladeAndSorcery
                         owoSkin.Feel($"Equip Chest");
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.Feel($"Equip Gauntlet R");
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet");
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.Feel($"Equip Gauntlet L");
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet");
                         break;
                 }
             }
@@ -565,7 +575,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(RagdollHand __instance, Handle handle)
             {
-                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal) return;
+                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal || !handle.item) return;
 
                 owoSkin.LOG($"OnHandCollision Grab - {handle.item.name} -- {__instance.side} ");
 
@@ -585,7 +595,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPrefix]
             public static void Prefix(RagdollHand __instance)
             {
-                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal) return;
+                if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal || !__instance.grabbedHandle.item) return;
 
                 owoSkin.LOG($"OnHandCollision UnGrab - {__instance.grabbedHandle.item.name} -- {__instance.side} ");
 

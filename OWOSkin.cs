@@ -31,7 +31,7 @@ namespace OWO_BladeAndSorcery
         private bool climbRIsActive = false;
         private bool spellIsActive = false;
         private bool slowMotionIsActive = false;
-        private bool swimmingIsActive = false;
+        public bool heartBeatIsActive = false;
 
         public Dictionary<string, Sensation> SensationsMap { get => sensationsMap; set => sensationsMap = value; }
 
@@ -240,6 +240,7 @@ namespace OWO_BladeAndSorcery
             StopClimb(false);
             StopSpell(true);
             StopSpell(false);
+            StopHeartBeat();
 
             OWO.Stop();
         }
@@ -465,6 +466,32 @@ namespace OWO_BladeAndSorcery
             while (slowMotionIsActive)
             {
                 Feel("Slow Motion", 1);
+                await Task.Delay(1000);
+            }
+        }
+
+        #endregion        
+        
+        #region HeartBeat
+
+        public void StartHeartBeat()
+        {
+            if (heartBeatIsActive) return;
+
+            heartBeatIsActive = true;
+            HeartBeatFuncAsync();
+        }
+
+        public void StopHeartBeat()
+        {
+            heartBeatIsActive = false;
+        }
+
+        public async Task HeartBeatFuncAsync()
+        {
+            while (heartBeatIsActive)
+            {
+                Feel("Heart Beat", 0);
                 await Task.Delay(1000);
             }
         }
