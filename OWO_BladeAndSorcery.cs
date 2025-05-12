@@ -458,16 +458,16 @@ namespace OWO_BladeAndSorcery
                     switch (holder.name)
                     {
                         case "BackLeft":
-                            owoSkin.FeelWithMuscles(added ? "Holster Shoulder" : "Unholster Shoulder", "Left Back", Priority: 2);
+                            owoSkin.FeelWithMuscles(added ? "Holster" : "Unholster", "Left Back", Priority: 2);
                             break;
                         case "BackRight":
-                            owoSkin.FeelWithMuscles(added ? "Holster Shoulder" : "Unholster Shoulder", "Right Back", Priority: 2);
+                            owoSkin.FeelWithMuscles(added ? "Holster" : "Unholster", "Right Back", Priority: 2);
                             break;
                         case "HipsLeft":
-                            owoSkin.FeelWithMuscles(added ? "Holster Hips" : "Unholster Hips", "Left Hip", Priority: 2);
+                            owoSkin.FeelWithMuscles(added ? "Holster" : "Unholster", "Left Hip", Priority: 2);
                             break;
                         case "HipsRight":
-                            owoSkin.FeelWithMuscles(added ? "Holster Hips" : "Unholster Hips", "Right Hip", Priority: 2);
+                            owoSkin.FeelWithMuscles(added ? "Holster" : "Unholster", "Right Hip", Priority: 2);
                             break;
                     }
                 }
