@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using ThunderRoad;
+using ThunderRoad.AI;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
 
@@ -119,7 +120,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(Locomotion __instance, Vector3 velocity)
             {
-                if (!owoSkin.CanFeel() || !__instance.player || !__instance.player.isLocal) return;
+                if (!owoSkin.CanFeel() || !__instance.player || !__instance.player.isLocal || !(bool)Player.local.creature) return;
 
                 canJump = true;
                 if (velocity.magnitude >= Player.local.creature.data.playerFallDamageCurve.GetFirstTime())
@@ -214,6 +215,7 @@ namespace OWO_BladeAndSorcery
                     owoSkin.StopSpell(false);
             }
         }
+
         [HarmonyPatch(typeof(SpellMergeData), "Merge")]
         public class OnSpellMerge
         {
@@ -251,7 +253,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel() || !__instance.spellCaster.mana.creature.player || !__instance.spellCaster.mana.creature.player.isLocal) return;
 
-                owoSkin.FeelWithMuscles("Throw spell", __instance.spellCaster.ragdollHand.side == Side.Right ? "Right Arm" : "Left Arm", 2);
+                owoSkin.FeelWithMuscles("Throw", __instance.spellCaster.ragdollHand.side == Side.Right ? "Right Arm" : "Left Arm", 2);
             }
         }
 
@@ -263,7 +265,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel() || !__instance.mana.creature.player || !__instance.mana.creature.player.isLocal) return;
 
-                owoSkin.FeelWithMuscles("Throw spell", "Both Arms", 2);
+                owoSkin.FeelWithMuscles("Throw", "Both Arms", 2);
             }
         }
 
@@ -280,7 +282,7 @@ namespace OWO_BladeAndSorcery
 
                 try
                 {
-                    if (owoSkin.heartBeatIsActive || Player.local.creature.currentHealth >= 25) owoSkin.StopHeartBeat();
+                    if (owoSkin.heartBeatIsActive && Player.local.creature.currentHealth >= 25) owoSkin.StopHeartBeat();
 
                     Item heldItem = __instance.creature.equipment.GetHeldItem(Side.Left);
                     Item heldItem2 = __instance.creature.equipment.GetHeldItem(Side.Right);
@@ -350,16 +352,30 @@ namespace OWO_BladeAndSorcery
         [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
         public class OnDamage
         {
+            public static bool isPlayerHit;
+
             [HarmonyPrefix]
             public static void Prefix(Creature __instance, out float __state)
             {
                 __state = __instance.currentHealth;
+                isPlayerHit = (bool)__instance.player;
+                owoSkin.LOG($"PRE DANO ##################### - {__state}");
+
             }
 
             [HarmonyPostfix]
             public static void Postfix(Creature __instance, float __state, CollisionInstance collisionInstance)
             {
+                owoSkin.LOG($"INICIO DANO - {owoSkin.CanFeel()} - {(bool)isPlayerHit} #####################");
+
+                if (isPlayerHit && __instance.currentHealth <= 0)
+                {
+                    owoSkin.StopAllHapticFeedback();
+                    owoSkin.Feel("Death", 4);
+                }
                 if (!owoSkin.CanFeel() || !(bool)__instance.player || !__instance.player.isLocal) return;
+
+                owoSkin.LOG($"INICIO2 DANO #####################");
                 float damage = __state - __instance.currentHealth;
                 float angle;
 
@@ -382,32 +398,29 @@ namespace OWO_BladeAndSorcery
                     switch (angle)
                     {
                         case float a when (a > 135 && a <= 225):
-                            owoSkin.FeelWithMuscles("Damage", "Front Damage",3); //Front
-                            return;
+                            owoSkin.FeelWithMuscles("Damage", "Front Damage", 3); //Front
+                            break;
                         case float a when (a > 45 && a <= 135):
-                            owoSkin.FeelWithMuscles("Damage", "Right Damage",3); //Right
-                            return;
+                            owoSkin.FeelWithMuscles("Damage", "Right Damage", 3); //Right
+                            break;
                         case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
-                            owoSkin.FeelWithMuscles("Damage", "Back Damage",3); //Back
-                            return;
+                            owoSkin.FeelWithMuscles("Damage", "Back Damage", 3); //Back
+                            break;
                         case float a when (a > 225 && a <= 315):
-                            owoSkin.FeelWithMuscles("Damage", "Left Damage",3); //Left
-                            return;
+                            owoSkin.FeelWithMuscles("Damage", "Left Damage", 3); //Left
+                            break;
+                        default:
+                            owoSkin.FeelWithMuscles("Damage", "Front Damage", 3); //Default
+                            break;
                     }
                 }
                 catch (Exception)
                 {
-                    owoSkin.FeelWithMuscles("Damage", "Front Damage",3);
-                    return;
+                    owoSkin.FeelWithMuscles("Damage", "Front Damage", 3);
                 }
 
+                owoSkin.LOG($"VIDA - {__instance.currentHealth}");
                 if (__instance.currentHealth <= 25) owoSkin.StartHeartBeat();
-
-                if (__instance.currentHealth <= 0)
-                {
-                    owoSkin.StopAllHapticFeedback();
-                    owoSkin.Feel("Death", 4);
-                }
             }
         }
 
@@ -566,7 +579,7 @@ namespace OWO_BladeAndSorcery
                 Vector3 velocity = __instance.Velocity();
 
                 owoSkin.LOG($"OnHandCollision hit - {velocity.magnitude}");
-                int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 40, 100));
+                int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 60, 100));
 
                 if (velocity.magnitude <= 2) return;
 
@@ -613,7 +626,6 @@ namespace OWO_BladeAndSorcery
                 }
             }
         }
-
         public static void HandleHeldCollisionStart(CollisionInstance collision)
         {
             Item item = collision.sourceColliderGroup.collisionHandler.item;
@@ -653,6 +665,24 @@ namespace OWO_BladeAndSorcery
             int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 40, 100));
             owoSkin.FeelWithMuscles("Melee", muscleSensation, 1, intensity);
         }
+        
+
+        [HarmonyPatch(typeof(Creature), "Kill", new Type[] {typeof(CollisionInstance)})]
+        public class OnDeath
+        {
+            [HarmonyPrefix]
+            public static void Prefix(Creature __instance)
+            {
+                owoSkin.LOG("dfsdfsdfs");
+                if (!owoSkin.CanFeel() 
+                    || !__instance.player || !__instance.player.isLocal
+                    ) return;
+
+                owoSkin.Feel("Death",4);
+            }
+        }
+
+
         #endregion
     }
 

@@ -222,6 +222,10 @@ namespace OWO_BladeAndSorcery
                 LOG("MuscleGroup not registered: " + muscleKey, "OWO-SENSATION");
                 return;
             }
+            else //BORRAR
+            {
+                LOG("MuscleGroup: " + muscleMap[muscleKey].Stringify(), "OWO-SENSATION");
+            }
 
             if (SensationsMap.ContainsKey(key))
             {
@@ -241,14 +245,13 @@ namespace OWO_BladeAndSorcery
         public void DynamicClimbing()
         {
             Muscle[] leftArmClimb = { Muscle.Arm_L.WithIntensity(climbingLIntensity), Muscle.Pectoral_L.WithIntensity(Mathf.FloorToInt(climbingLIntensity * 0.7f)), Muscle.Dorsal_L.WithIntensity(Mathf.FloorToInt(climbingLIntensity * 0.5f)) };
+            muscleMap["Left Arm Climbing"] = leftArmClimb;
 
             Muscle[] rightArmClimb = { Muscle.Arm_R.WithIntensity(climbingRIntensity), Muscle.Pectoral_R.WithIntensity(Mathf.FloorToInt(climbingRIntensity * 0.7f)), Muscle.Dorsal_R.WithIntensity(Mathf.FloorToInt(climbingRIntensity * 0.5f)) };
+            muscleMap["Right Arm Climbing"] = rightArmClimb;
 
+            //LOG($"CLIMB INTENSITY - R:{climbingRIntensity} - L:{climbingLIntensity}");
 
-            Muscle[] armsClimb = leftArmClimb.Concat(rightArmClimb).ToArray();
-
-            if (!muscleMap.ContainsKey("Arms Climbing")) muscleMap.Add("Arms Climbing", armsClimb);
-            else muscleMap["Arms Climbing"] = armsClimb;
         }
 
 
@@ -386,10 +389,25 @@ namespace OWO_BladeAndSorcery
 
         public async Task ClimbFuncAsync()
         {
-            string musclesToFeel = "Arms Climbing";
+            string musclesToFeel = "";
 
             while (climbRIsActive || climbLIsActive)
             {
+                if (climbRIsActive && climbLIsActive)
+                {
+                    musclesToFeel = "Both Arms";
+                }
+                else
+                {
+                    if (climbLIsActive)
+                    {
+                        musclesToFeel = "Left Arm Climbing";
+                    }
+                    else if (climbRIsActive)
+                    {
+                        musclesToFeel = "Right Arm Climbing";
+                    }
+                }
                 DynamicClimbing();
                 FeelWithMuscles("Climbing", musclesToFeel, 2);
                 await Task.Delay(400);
