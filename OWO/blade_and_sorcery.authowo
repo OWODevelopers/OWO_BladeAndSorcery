@@ -1,24 +1,25 @@
 0~Holster~58,2,42,0,100,0,Unpack&58,1,38,0,0,0,Unpack~default~Equipment#
-1~Unholster~58,1,35,100,0,0,Pack&58,2,40,100,0,0,Pack~default~Equipment#
+1~Unholster~58,1,35,100,0,0,Pack&58,2,40,100,0,0,Pack~interaction-2~Equipment#
 2~Equip Chest~36,5,38,200,200,0,Wear|0%100,1%100,3%100,2%100~default~Equipment#
 3~Equip Gauntlet~36,2,45,0,200,0,Wear~default~Equipment#
 4~Unequip Gauntlet~36,2,46,200,0,0,Unwear~default~Equipment#
-5~Punch~20,1,50,0,0,0,Hit~impact-2~Fight#
-6~Melee~81,3,50,100,200,0,Hit~weapon-4~Fight#
-7~Bow Pull~63,7,50,100,200,0,Tense~weapon-5~Fight#
-8~Throw~81,3,45,0,200,0,Recoil~impact-1~Fight#
-9~Jump~60,1,60,0,100,0,Fall|9%100,8%100,3%100,2%100~environment-5~Movement#
-10~Landing~40,2,60,0,0,0,Land|9%100,8%100,2%100,3%100~environment-5~Movement#
-11~Climbing~100,4,30,100,100,0,Hold~environment-3~Movement#
-12~Teleport~55,2,70,200,0,0,Landing|3%100,2%100,9%100,8%100&55,1,70,0,0,0,Landing|0%100,7%100,6%100,1%100~magic-2~Movement#
-13~Heart Beat~100,2,70,0,100,0,Systole|1%100&100,3,70,0,200,0,Diastole|1%100~health-0~Health#
-14~Damage~56,2,95,0,0,0,Wound~impact-7~Health#
-15~Fall Damage~56,2,95,0,0,0,Wound|2%100,3%100,9%100,8%100~environment-5~Health#
-16~Eating~46,10,28,200,300,0,Gulp|3%100,2%100~environment-3~Health#
-17~Potion Drinking~25,10,28,200,300,0,Drink|3%100,2%100,1%100,0%100,9%100,8%100~magic-0~Health#
-18~Poison Drinking~29,8,76,200,200,0,Drink|3%100,2%100~magic-0~Health#
-19~Telekinesis~41,7,35,100,200,0,Recoil~interaction-3~Magic#
-20~Slow Motion~69,8,45,400,300,0,Slow|3%100,6%100,2%100,1%100,0%100,7%100,9%100,8%100~environment-4~Magic#
-21~Spell~100,5,60,400,0,0,Tension&40,5,50,0,400,0,Grab~magic-5~Magic#
-22~Unequip Chest~36,2,38,0,200,1,Unwear|0%100,1%100,3%100,2%100&36,2,38,200,0,0,Unwear|0%100,3%100,2%100,1%100~default~Equipment#
-23~Kick~70,1,80,0,0,0,Hit|3%100,2%100,8%60,9%60~weapon-0~Fight
+5~Unequip Chest~36,2,38,0,200,1,Unwear|0%100,1%100,3%100,2%100&36,2,38,200,0,0,Unwear|0%100,3%100,2%100,1%100~default~Equipment#
+6~Punch~20,1,50,0,0,0,Hit~impact-2~Fight#
+7~Melee~81,3,50,100,200,0,Hit~weapon-4~Fight#
+8~Bow Pull~63,7,50,100,200,0,Tense~weapon-5~Fight#
+9~Throw~81,3,45,0,200,0,Recoil~impact-1~Fight#
+10~Kick~70,1,80,0,0,0,Hit|3%100,2%100,8%60,9%60~impact-2~Fight#
+11~Jump~60,1,60,0,100,0,Fall|9%100,8%100,3%100,2%100~environment-5~Movement#
+12~Landing~40,2,60,0,0,0,Land|9%100,8%100,2%100,3%100~environment-5~Movement#
+13~Climbing~100,4,30,100,100,0,Hold~environment-3~Movement#
+14~Teleport~55,2,70,200,0,0,Landing|3%100,2%100,9%100,8%100&55,1,70,0,0,0,Landing|0%100,7%100,6%100,1%100~magic-2~Movement#
+15~Heart Beat~100,2,70,0,100,0,Systole|1%100&100,3,70,0,200,0,Diastole|1%100~health-0~Health#
+16~Damage~56,2,95,0,0,0,Wound~impact-7~Health#
+17~Fall Damage~56,2,95,0,0,0,Wound|2%100,3%100,9%100,8%100~environment-5~Health#
+18~Eating~46,10,28,200,300,0,Gulp|3%100,2%100~environment-3~Health#
+19~Potion Drinking~25,10,28,200,300,0,Drink|3%100,2%100,1%100,0%100,9%100,8%100~magic-0~Health#
+20~Poison Drinking~29,8,76,200,200,0,Drink|3%100,2%100~magic-0~Health#
+21~Telekinesis~41,7,35,100,200,0,Recoil~interaction-3~Magic#
+22~Slow Motion~69,8,45,400,300,0,Slow|3%100,6%100,2%100,1%100,0%100,7%100,9%100,8%100~environment-4~Magic#
+23~Spell~100,5,60,400,0,0,Tension&40,5,50,0,400,0,Grab~magic-5~Magic#
+24~Death~40,11,80,0,900,0,Hit|0%100,1%100,3%100,2%100,7%100,9%100,8%100,6%100~health-3~Health
