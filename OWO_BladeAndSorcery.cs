@@ -425,10 +425,10 @@ namespace OWO_BladeAndSorcery
                         owoSkin.Feel($"Equip Chest");
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet");
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Right Gauntlet"); 
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet");
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Left Gauntlet");
                         break;
                 }
             }
@@ -448,10 +448,10 @@ namespace OWO_BladeAndSorcery
                         owoSkin.Feel($"Unequip Chest");
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.Feel($"Unequip Gauntlet R");
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Right Gauntlet");
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.Feel($"Unequip Gauntlet L");
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Left Gauntlet");
                         break;
                 }
             }

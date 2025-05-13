@@ -84,10 +84,16 @@ namespace OWO_BladeAndSorcery
         }
         private void DefineAllMuscleGroups()
         {
+            Muscle[] leftGauntlet = { Muscle.Arm_L};
+            muscleMap.Add("Left Gauntlet", leftGauntlet);
+
+            Muscle[] rightGauntlet = { Muscle.Arm_R};
+            muscleMap.Add("Right Gauntlet", rightGauntlet);
+
             Muscle[] leftDamage = { Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L };
             muscleMap.Add("Left Damage", leftDamage);
 
-            Muscle[] rightDamage = { Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L };
+            Muscle[] rightDamage = { Muscle.Arm_R, Muscle.Pectoral_R, Muscle.Abdominal_R, Muscle.Dorsal_R, Muscle.Lumbar_R };
             muscleMap.Add("Right Damage", rightDamage);
 
             Muscle[] frontDamage = Muscle.Front;
