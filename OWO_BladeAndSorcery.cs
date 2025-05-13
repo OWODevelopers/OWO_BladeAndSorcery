@@ -293,18 +293,18 @@ namespace OWO_BladeAndSorcery
 
                     if (isGripping || isLadder || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handLeftEnabled && __instance.creature.ragdoll.ik.handLeftTarget != null && heldItem == null && __instance.creature.equipment.GetHeldHandle(Side.Left) != null && !__instance.creature.equipment.GetHeldHandle(Side.Left).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Left) - 1f) < 0.0001f))
                     {
+                        float num = Math.Abs(Player.local.creature.handLeft.transform.position.y - Player.local.head.transform.position.y);
+                        owoSkin.climbingLIntensity = Mathf.FloorToInt(Mathf.Clamp(num * 200, 40, 100));
                         if (!leftHandClimbing)
                         {
-                            float num = Math.Abs(Player.local.handLeft.transform.position.y - Player.local.head.transform.position.y);
-                            owoSkin.climbingLIntensity = Mathf.FloorToInt(Mathf.Clamp(num * 200, 40, 100));
-                            
                             leftHandClimbing = true;
                             owoSkin.StartClimb(false);
-                            owoSkin.LOG($"ESCALADA IZQUIERDA -- {num}", "EVENT");
+                            owoSkin.LOG($"ESCALADA IZQUIERDA -- {num} -- {owoSkin.climbingLIntensity}", "EVENT");
                         }
                     }
                     else if (leftHandClimbing)
                     {
+                        owoSkin.climbingLIntensity = 0;
                         leftHandClimbing = false;
                         owoSkin.StopClimb(false);
                         owoSkin.LOG($"PARAR ESCALADA IZQUIERDA", "EVENT");
@@ -312,17 +312,18 @@ namespace OWO_BladeAndSorcery
 
                     if (isGripping2 || isLadder2 || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handRightEnabled && __instance.creature.ragdoll.ik.handRightTarget != null && heldItem2 == null && __instance.creature.equipment.GetHeldHandle(Side.Right) != null && !__instance.creature.equipment.GetHeldHandle(Side.Right).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Right) - 1f) < 0.0001f))
                     {
+                        float num2 = Math.Abs(Player.local.creature.handRight.transform.position.y - Player.local.head.transform.position.y);
+                        owoSkin.climbingRIntensity = Mathf.FloorToInt(Mathf.Clamp(num2 * 200, 40, 100));
                         if (!rightHandClimbing)
                         {
-                            float num2 = Math.Abs(Player.local.handRight.transform.position.y - Player.local.head.transform.position.y);
-                            owoSkin.climbingRIntensity = Mathf.FloorToInt(Mathf.Clamp(num2 * 200, 40, 100));
                             rightHandClimbing = true;
                             owoSkin.StartClimb(true);
-                            owoSkin.LOG($"ESCALADA DERECHA {num2}", "EVENT");
+                            owoSkin.LOG($"ESCALADA DERECHA -- {num2} -- {owoSkin.climbingRIntensity}", "EVENT");
                         }
                     }
                     else if (rightHandClimbing)
                     {
+                        owoSkin.climbingRIntensity = 0;
                         rightHandClimbing = false;
                         owoSkin.StopClimb(true);
                         owoSkin.LOG($"PARAR ESCALADA DERECHA", "EVENT");
