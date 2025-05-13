@@ -69,7 +69,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.Feel("Teleport");
+                owoSkin.Feel("Teleport",2);
             }
         }
 
@@ -108,7 +108,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Locomotion __instance, bool active)
             {
                 if (!owoSkin.CanFeel() || !canJump || !active || !__instance.player || !__instance.player.isLocal) return;
-                owoSkin.Feel("Jump");
+                owoSkin.Feel("Jump",2);
                 canJump = false;
             }
         }
@@ -123,10 +123,10 @@ namespace OWO_BladeAndSorcery
 
                 canJump = true;
                 if (velocity.magnitude >= Player.local.creature.data.playerFallDamageCurve.GetFirstTime())
-                    owoSkin.Feel("Fall Damage");
+                    owoSkin.Feel("Fall Damage",3);
                 else if (velocity.magnitude >= 0.9f)
                     //intensity per velocity(?
-                    owoSkin.Feel("Landing");
+                    owoSkin.Feel("Landing",2);
             }
         }
 
@@ -343,7 +343,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Item item, CreatureMouthRelay mouthRelay)
             {
                 if (!owoSkin.CanFeel() || !mouthRelay.creature.player || !mouthRelay.creature.player.isLocal) return;
-                owoSkin.Feel("Eating");
+                owoSkin.Feel("Eating",1);
             }
         }
 
@@ -382,22 +382,22 @@ namespace OWO_BladeAndSorcery
                     switch (angle)
                     {
                         case float a when (a > 135 && a <= 225):
-                            owoSkin.FeelWithMuscles("Damage", "Front Damage"); //Front
+                            owoSkin.FeelWithMuscles("Damage", "Front Damage",3); //Front
                             return;
                         case float a when (a > 45 && a <= 135):
-                            owoSkin.FeelWithMuscles("Damage", "Right Damage"); //Right
+                            owoSkin.FeelWithMuscles("Damage", "Right Damage",3); //Right
                             return;
                         case float a when ((a >= 0 && a <= 45) || (a > 315 && a <= 360)):
-                            owoSkin.FeelWithMuscles("Damage", "Back Damage"); //Back
+                            owoSkin.FeelWithMuscles("Damage", "Back Damage",3); //Back
                             return;
                         case float a when (a > 225 && a <= 315):
-                            owoSkin.FeelWithMuscles("Damage", "Left Damage"); //Left
+                            owoSkin.FeelWithMuscles("Damage", "Left Damage",3); //Left
                             return;
                     }
                 }
                 catch (Exception)
                 {
-                    owoSkin.FeelWithMuscles("Damage", "Front Damage");
+                    owoSkin.FeelWithMuscles("Damage", "Front Damage",3);
                     return;
                 }
 
@@ -422,13 +422,13 @@ namespace OWO_BladeAndSorcery
                 switch (type)
                 {
                     case RagdollPart.Type.Torso:
-                        owoSkin.Feel($"Equip Chest");
+                        owoSkin.Feel($"Equip Chest",2);
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Right Gauntlet"); 
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Right Gauntlet",2); 
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Left Gauntlet");
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Left Gauntlet",2);
                         break;
                 }
             }
@@ -445,13 +445,13 @@ namespace OWO_BladeAndSorcery
                 switch (type)
                 {
                     case RagdollPart.Type.Torso:
-                        owoSkin.Feel($"Unequip Chest");
+                        owoSkin.Feel($"Unequip Chest",2);
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Right Gauntlet");
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Right Gauntlet",2);
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Left Gauntlet");
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Left Gauntlet",2);
                         break;
                 }
             }
@@ -498,7 +498,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(LiquidReceiver liquidReceiver)
             {
                 if (!owoSkin.CanFeel() || !liquidReceiver.Relay.creature.player || !liquidReceiver.Relay.creature.player.isLocal) return;
-                owoSkin.Feel($"Potion Drinking");
+                owoSkin.Feel($"Potion Drinking",1);
             }
         }
 
@@ -510,7 +510,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(LiquidReceiver liquidReceiver)
             {
                 if (!owoSkin.CanFeel() || !liquidReceiver.Relay.creature.player || !liquidReceiver.Relay.creature.player.isLocal) return;
-                owoSkin.Feel($"Poison Drinking");
+                owoSkin.Feel($"Poison Drinking",1);
             }
         }
 

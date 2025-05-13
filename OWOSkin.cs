@@ -84,10 +84,10 @@ namespace OWO_BladeAndSorcery
         }
         private void DefineAllMuscleGroups()
         {
-            Muscle[] leftGauntlet = { Muscle.Arm_L};
+            Muscle[] leftGauntlet = { Muscle.Arm_L };
             muscleMap.Add("Left Gauntlet", leftGauntlet);
 
-            Muscle[] rightGauntlet = { Muscle.Arm_R};
+            Muscle[] rightGauntlet = { Muscle.Arm_R };
             muscleMap.Add("Right Gauntlet", rightGauntlet);
 
             Muscle[] leftDamage = { Muscle.Arm_L, Muscle.Pectoral_L, Muscle.Abdominal_L, Muscle.Dorsal_L, Muscle.Lumbar_L };
@@ -141,7 +141,7 @@ namespace OWO_BladeAndSorcery
             {
                 suitEnabled = true;
                 LOG("OWO suit connected.");
-                Feel("Heart Beat");
+                Feel("Heart Beat", 0);
             }
             if (!suitEnabled) LOG("OWO is not enabled?!?!");
         }
@@ -322,7 +322,7 @@ namespace OWO_BladeAndSorcery
                         musclesToFeel = "Left Arm";
                 }
 
-                FeelWithMuscles("Telekinesis", musclesToFeel);
+                FeelWithMuscles("Telekinesis", musclesToFeel, 2);
                 await Task.Delay(1000);
             }
 
@@ -448,7 +448,7 @@ namespace OWO_BladeAndSorcery
                         musclesToFeel = "Left Arm";
                 }
 
-                FeelWithMuscles("Spell", musclesToFeel);
+                FeelWithMuscles("Spell", musclesToFeel, 2);
                 await Task.Delay(400);
             }
 
