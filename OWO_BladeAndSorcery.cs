@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using System;
 using ThunderRoad;
-using ThunderRoad.AI;
 using ThunderRoad.Skill.SpellPower;
 using UnityEngine;
 
@@ -34,27 +33,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix()
             {
                 owoSkin.playing = true;
-            }
-        }
-
-        [HarmonyPatch(typeof(UIMenu), "MenuOpened")]
-        public class OnMenuOpened
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                //Se llama al cambiar de opcion en el menu del juego
-                //owoSkin.LOG("MenuOpened");
-            }
-        }
-
-        [HarmonyPatch(typeof(UIMenu), "MenuClosed")]
-        public class OnMenuClosed
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                //owoSkin.LOG("MenuClosed");
+                owoSkin.LOG("PLAYER START");
             }
         }
 
@@ -70,7 +49,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel()) return;
 
-                owoSkin.Feel("Teleport",2);
+                owoSkin.Feel("Teleport", 2);
             }
         }
 
@@ -80,7 +59,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(SpellTelekinesis spellTelekinesis)
             {
-                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR"}", "EVENT");
+                //owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR"}", "EVENT");
 
                 if (!owoSkin.CanFeel() || !spellTelekinesis.spellCaster.mana.creature.player || !spellTelekinesis.spellCaster.mana.creature.player.isLocal) return;
 
@@ -94,7 +73,7 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(SpellTelekinesis spellTelekinesis)
             {
-                owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand}", "EVENT");
+                //owoSkin.LOG($"OnTelekinesisGrab: {spellTelekinesis.spellCaster.ragdollHand.playerHand.name == "HandR"}", "EVENT");
 
                 if (!owoSkin.CanFeel() || !spellTelekinesis.spellCaster.mana.creature.player || !spellTelekinesis.spellCaster.mana.creature.player.isLocal) return;
 
@@ -109,7 +88,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Locomotion __instance, bool active)
             {
                 if (!owoSkin.CanFeel() || !canJump || !active || !__instance.player || !__instance.player.isLocal) return;
-                owoSkin.Feel("Jump",2);
+                owoSkin.Feel("Jump", 2);
                 canJump = false;
             }
         }
@@ -124,10 +103,9 @@ namespace OWO_BladeAndSorcery
 
                 canJump = true;
                 if (velocity.magnitude >= Player.local.creature.data.playerFallDamageCurve.GetFirstTime())
-                    owoSkin.Feel("Fall Damage",3);
+                    owoSkin.Feel("Fall Damage", 3);
                 else if (velocity.magnitude >= 0.9f)
-                    //intensity per velocity(?
-                    owoSkin.Feel("Landing",2);
+                    owoSkin.Feel("Landing", 2);
             }
         }
 
@@ -172,7 +150,7 @@ namespace OWO_BladeAndSorcery
         public class OnKick
         {
             [HarmonyPrefix]
-            public static void Prefix(PlayerFoot __instance, Transform target, Vector3 targetLocalPos)
+            public static void Prefix(PlayerFoot __instance)
             {
                 if (!owoSkin.CanFeel() || !__instance.player.isLocal) return;
                 if (!__instance.isAutoKicking && (bool)__instance.ragdollFoot)
@@ -187,15 +165,11 @@ namespace OWO_BladeAndSorcery
             [HarmonyPostfix]
             public static void Postfix(SpellCastCharge __instance, bool active)
             {
-                //Evento de cargar un hechizo, se llama al cargar y al parar de cargar
-                //Este sera un bucle para poder llamar a una mano, la otra o ambas
-                //Por cada hechizo (derivados de la clase spellCastCharge) se tiene que usar su método Throw con sensaciones diferentes.
-
                 if (!owoSkin.CanFeel() || !__instance.spellCaster.mana.creature.player || !__instance.spellCaster.mana.creature.player.isLocal) return;
 
                 Side actualHand = __instance.spellCaster.ragdollHand.side;
 
-                owoSkin.LOG($"SPELL - ACTIVE: {active} -- order: {__instance.order} - wheelDisplayName: {__instance.wheelDisplayName}, castDescription - {__instance.castDescription}", "EVENT");
+                //owoSkin.LOG($"SPELL - ACTIVE: {active} -- order: {__instance.order} - wheelDisplayName: {__instance.wheelDisplayName}, castDescription - {__instance.castDescription}", "EVENT");
                 //__instance.wheelDisplayName || __instance.order
                 //FIRE - {SpellFire} || 0
                 //LIGHTNING - {SpellLightning} || 1
@@ -236,7 +210,7 @@ namespace OWO_BladeAndSorcery
                 }
 
 
-                owoSkin.LOG($"SPELL - ACTIVE: {active} -- description: {__instance.description} - id: {__instance.id}", "EVENT");
+                //owoSkin.LOG($"SPELL - ACTIVE: {active} -- description: {__instance.description} - id: {__instance.id}", "EVENT");
                 //__instance.description
                 //FIRE - FireMerge
                 //LIGHTNING - LightningMerge
@@ -301,7 +275,7 @@ namespace OWO_BladeAndSorcery
                         {
                             leftHandClimbing = true;
                             owoSkin.StartClimb(false);
-                            owoSkin.LOG($"ESCALADA IZQUIERDA -- {num} -- {owoSkin.climbingLIntensity}", "EVENT");
+                            //owoSkin.LOG($"CLIMB LEFT -- {num} -- {owoSkin.climbingLIntensity}", "EVENT");
                         }
                     }
                     else if (leftHandClimbing)
@@ -309,7 +283,7 @@ namespace OWO_BladeAndSorcery
                         owoSkin.climbingLIntensity = 0;
                         leftHandClimbing = false;
                         owoSkin.StopClimb(false);
-                        owoSkin.LOG($"PARAR ESCALADA IZQUIERDA", "EVENT");
+                        //owoSkin.LOG($"STOP CLIMB LEFT", "EVENT");
                     }
 
                     if (isGripping2 || isLadder2 || (__instance.creature.ragdoll.ik != null && __instance.creature.ragdoll.ik.handRightEnabled && __instance.creature.ragdoll.ik.handRightTarget != null && heldItem2 == null && __instance.creature.equipment.GetHeldHandle(Side.Right) != null && !__instance.creature.equipment.GetHeldHandle(Side.Right).customRigidBody.isKinematic && Math.Abs(__instance.creature.ragdoll.ik.GetHandPositionWeight(Side.Right) - 1f) < 0.0001f))
@@ -320,7 +294,7 @@ namespace OWO_BladeAndSorcery
                         {
                             rightHandClimbing = true;
                             owoSkin.StartClimb(true);
-                            owoSkin.LOG($"ESCALADA DERECHA -- {num2} -- {owoSkin.climbingRIntensity}", "EVENT");
+                            //owoSkin.LOG($"CLIMB RIGHT -- {num2} -- {owoSkin.climbingRIntensity}", "EVENT");
                         }
                     }
                     else if (rightHandClimbing)
@@ -328,7 +302,7 @@ namespace OWO_BladeAndSorcery
                         owoSkin.climbingRIntensity = 0;
                         rightHandClimbing = false;
                         owoSkin.StopClimb(true);
-                        owoSkin.LOG($"PARAR ESCALADA DERECHA", "EVENT");
+                        //owoSkin.LOG($"STOP CLIMB RIGHT", "EVENT");
                     }
                 }
                 catch (Exception)
@@ -345,38 +319,19 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(Item item, CreatureMouthRelay mouthRelay)
             {
                 if (!owoSkin.CanFeel() || !mouthRelay.creature.player || !mouthRelay.creature.player.isLocal) return;
-                owoSkin.Feel("Eating",1);
+                owoSkin.Feel("Eating", 1);
             }
         }
 
         [HarmonyPatch(typeof(Creature), "Damage", new System.Type[] { typeof(CollisionInstance) })]
         public class OnDamage
         {
-            public static bool isPlayerHit;
-
-            [HarmonyPrefix]
-            public static void Prefix(Creature __instance, out float __state)
-            {
-                __state = __instance.currentHealth;
-                isPlayerHit = (bool)__instance.player;
-                owoSkin.LOG($"PRE DANO ##################### - {__state}");
-
-            }
-
             [HarmonyPostfix]
-            public static void Postfix(Creature __instance, float __state, CollisionInstance collisionInstance)
+            public static void Postfix(Creature __instance, bool __state, CollisionInstance collisionInstance)
             {
-                owoSkin.LOG($"INICIO DANO - {owoSkin.CanFeel()} - {(bool)isPlayerHit} #####################");
+                if (!owoSkin.CanFeel()) return;
+                if (!(bool)__instance.player || !__instance.player.isLocal) return;
 
-                if (isPlayerHit && __instance.currentHealth <= 0)
-                {
-                    owoSkin.StopAllHapticFeedback();
-                    owoSkin.Feel("Death", 4);
-                }
-                if (!owoSkin.CanFeel() || !(bool)__instance.player || !__instance.player.isLocal) return;
-
-                owoSkin.LOG($"INICIO2 DANO #####################");
-                float damage = __state - __instance.currentHealth;
                 float angle;
 
                 Creature creature = collisionInstance.sourceColliderGroup?.collisionHandler.item?.lastHandler?.creature;
@@ -387,12 +342,12 @@ namespace OWO_BladeAndSorcery
 
                 try
                 {
-                    var asdf = Player.local.creature.transform.forward.ToXZ();
-                    var fdaa = -creature.transform.forward.ToXZ();
-                    owoSkin.LOG($"{asdf}");
-                    owoSkin.LOG($"{fdaa}");
+                    Vector3 playerForward = Player.local.creature.transform.forward.ToXZ();
+                    Vector3 attackerForward = creature.transform.forward.ToXZ();
+                    //owoSkin.LOG($"{playerForward}");
+                    //owoSkin.LOG($"{attackerForward}");
 
-                    angle = Vector3.SignedAngle(asdf, fdaa, Vector3.up);
+                    angle = Vector3.SignedAngle(playerForward, -attackerForward, Vector3.up);
                     angle += 180f;
 
                     switch (angle)
@@ -419,7 +374,7 @@ namespace OWO_BladeAndSorcery
                     owoSkin.FeelWithMuscles("Damage", "Front Damage", 3);
                 }
 
-                owoSkin.LOG($"VIDA - {__instance.currentHealth}");
+                //owoSkin.LOG($"HEALTH - {__instance.currentHealth}");
                 if (__instance.currentHealth <= 25) owoSkin.StartHeartBeat();
             }
         }
@@ -435,13 +390,13 @@ namespace OWO_BladeAndSorcery
                 switch (type)
                 {
                     case RagdollPart.Type.Torso:
-                        owoSkin.Feel($"Equip Chest",2);
+                        owoSkin.Feel($"Equip Chest", 2);
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Right Gauntlet",2); 
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Right Gauntlet", 2);
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Left Gauntlet",2);
+                        owoSkin.FeelWithMuscles($"Equip Gauntlet", "Left Gauntlet", 2);
                         break;
                 }
             }
@@ -458,13 +413,13 @@ namespace OWO_BladeAndSorcery
                 switch (type)
                 {
                     case RagdollPart.Type.Torso:
-                        owoSkin.Feel($"Unequip Chest",2);
+                        owoSkin.Feel($"Unequip Chest", 2);
                         break;
                     case RagdollPart.Type.RightArm:
-                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Right Gauntlet",2);
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Right Gauntlet", 2);
                         break;
                     case RagdollPart.Type.LeftArm:
-                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Left Gauntlet",2);
+                        owoSkin.FeelWithMuscles($"Unequip Gauntlet", "Left Gauntlet", 2);
                         break;
                 }
             }
@@ -511,7 +466,7 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(LiquidReceiver liquidReceiver)
             {
                 if (!owoSkin.CanFeel() || !liquidReceiver.Relay.creature.player || !liquidReceiver.Relay.creature.player.isLocal) return;
-                owoSkin.Feel($"Potion Drinking",1);
+                owoSkin.Feel($"Potion Drinking", 1);
             }
         }
 
@@ -523,50 +478,9 @@ namespace OWO_BladeAndSorcery
             public static void Postfix(LiquidReceiver liquidReceiver)
             {
                 if (!owoSkin.CanFeel() || !liquidReceiver.Relay.creature.player || !liquidReceiver.Relay.creature.player.isLocal) return;
-                owoSkin.Feel($"Poison Drinking",1);
+                owoSkin.Feel($"Poison Drinking", 1);
             }
         }
-
-        #endregion
-
-        [HarmonyPatch(typeof(UIInventory), "InvokeOnOpen")]
-        public class OnOpenInventory
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.LOG($"OnOpenInventory", "EVENT");
-            }
-        }
-
-        [HarmonyPatch(typeof(SpellPowerSlowTime), "SlowTime")]
-        public class OnSpellSlowtimeUse
-        {
-            [HarmonyPostfix]
-            public static void Postfix(bool __result)
-            {
-                if (!owoSkin.CanFeel()) return;
-                if (__result)
-                    owoSkin.StartSlowMotion();
-            }
-        }
-
-        [HarmonyPatch(typeof(SpellPowerSlowTime), "StopSlowTime")]
-        public class OnSpellStopSlowtimeUse
-        {
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                owoSkin.StopSlowMotion();
-            }
-        }
-
-
-
-
-
-        #region Prueba
-
 
         [HarmonyPatch(typeof(RagdollHand), "OnHandCollision")]
         public class OnPunch
@@ -578,7 +492,7 @@ namespace OWO_BladeAndSorcery
 
                 Vector3 velocity = __instance.Velocity();
 
-                owoSkin.LOG($"OnHandCollision hit - {velocity.magnitude}");
+                //owoSkin.LOG($"OnHandCollision hit - {velocity.magnitude}");
                 int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 60, 100));
 
                 if (velocity.magnitude <= 2) return;
@@ -587,6 +501,7 @@ namespace OWO_BladeAndSorcery
             }
         }
 
+        #region Grab
         [HarmonyPatch(typeof(RagdollHand), "Grab", new Type[] { typeof(Handle), typeof(HandlePose), typeof(float), typeof(bool), typeof(bool) })]
         public class OnGrab
         {
@@ -595,7 +510,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal || !handle.item) return;
 
-                owoSkin.LOG($"OnHandCollision Grab - {handle.item.name} -- {__instance.side} ");
+                //owoSkin.LOG($"OnHandCollision Grab - {handle.item.name} -- {__instance.side} ");
 
                 foreach (CollisionHandler collisionHandler2 in handle.item.collisionHandlers)
                 {
@@ -615,7 +530,7 @@ namespace OWO_BladeAndSorcery
             {
                 if (!owoSkin.CanFeel() || !__instance.creature.player || !__instance.creature.player.isLocal || !__instance.grabbedHandle.item) return;
 
-                owoSkin.LOG($"OnHandCollision UnGrab - {__instance.grabbedHandle.item.name} -- {__instance.side} ");
+                //owoSkin.LOG($"OnHandCollision UnGrab - {__instance.grabbedHandle.item.name} -- {__instance.side} ");
 
                 foreach (CollisionHandler collisionHandler2 in __instance.grabbedHandle.item.collisionHandlers)
                 {
@@ -644,7 +559,7 @@ namespace OWO_BladeAndSorcery
             Vector3 velocity = (collision.sourceColliderGroup.collisionHandler.checkMinVelocity ? result : Vector3.zero);
 
             string muscleSensation = "Right Arm";
-            owoSkin.LOG($"OnGrabbedItemCollision hit - {velocity.magnitude}");
+            //owoSkin.LOG($"OnGrabbedItemCollision hit - {velocity.magnitude}");
             if (velocity.magnitude <= 3) return;
             for (int i = 0; i < item.handlers.Count; i++)
             {
@@ -665,25 +580,45 @@ namespace OWO_BladeAndSorcery
             int intensity = Mathf.FloorToInt(Mathf.Clamp(velocity.magnitude * 10, 40, 100));
             owoSkin.FeelWithMuscles("Melee", muscleSensation, 1, intensity);
         }
-        
 
-        [HarmonyPatch(typeof(Creature), "Kill", new Type[] {typeof(CollisionInstance)})]
+        #endregion
+
+        [HarmonyPatch(typeof(Creature), "Kill", new Type[] { typeof(CollisionInstance) })]
         public class OnDeath
         {
             [HarmonyPrefix]
             public static void Prefix(Creature __instance)
             {
-                owoSkin.LOG("dfsdfsdfs");
-                if (!owoSkin.CanFeel() 
-                    || !__instance.player || !__instance.player.isLocal
-                    ) return;
+                if (!owoSkin.CanFeel() || !__instance.player || !__instance.player.isLocal) return;
 
-                owoSkin.Feel("Death",4);
+                owoSkin.StopAllHapticFeedback();
+                owoSkin.Feel("Death", 4);
+                owoSkin.playing = false;
             }
         }
 
-
         #endregion
+
+        [HarmonyPatch(typeof(SpellPowerSlowTime), "SlowTime")]
+        public class OnSpellSlowtimeUse
+        {
+            [HarmonyPostfix]
+            public static void Postfix(bool __result)
+            {
+                if (!owoSkin.CanFeel() || !__result) return;
+                owoSkin.StartSlowMotion();
+            }
+        }
+
+        [HarmonyPatch(typeof(SpellPowerSlowTime), "StopSlowTime")]
+        public class OnSpellStopSlowtimeUse
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                owoSkin.StopSlowMotion();
+            }
+        }
     }
 
 }

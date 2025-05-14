@@ -222,10 +222,6 @@ namespace OWO_BladeAndSorcery
                 LOG("MuscleGroup not registered: " + muscleKey, "OWO-SENSATION");
                 return;
             }
-            else //BORRAR
-            {
-                LOG("MuscleGroup: " + muscleMap[muscleKey].Stringify(), "OWO-SENSATION");
-            }
 
             if (SensationsMap.ContainsKey(key))
             {
