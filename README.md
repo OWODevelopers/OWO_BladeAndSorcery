@@ -9,9 +9,9 @@ OWO is capable of delivering highly realistic and precise sensations, such as th
 Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 
 # Installation
-- Download the [lastest release of this mod](https://github.com/OWODevelopers/OWO_BladeAndSorcery/releases/latest)
+- Download the [latest release of this mod](https://github.com/OWODevelopers/OWO_BladeAndSorcery/releases/latest)
 - Extract the content of the zip and place it into ["GameFolder"\BladeAndSorcery_Data\StreamingAssets\Mods]
-- Enjoy your inmersive experience! ⚔🔥
+- Enjoy your immersive experience! ⚔🔥
 
 # Featured effect
 - Heart Beat
