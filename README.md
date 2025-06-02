@@ -11,6 +11,7 @@ Want to get an OWO Suit? [Look here](https://owogame.com/shop/).
 # Installation
 - Download the [latest release of this mod](https://github.com/OWODevelopers/OWO_BladeAndSorcery/releases/latest)
 - Extract the content of the zip and place it into ["GameFolder"\BladeAndSorcery_Data\StreamingAssets\Mods]
+- Open the game and press on "play" button to start the connection.
 - Enjoy your immersive experience! ⚔🔥
 
 # Featured effect
