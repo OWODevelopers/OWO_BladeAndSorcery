@@ -46,17 +46,17 @@ namespace OWO_BladeAndSorcery
 
         public void LOG(String msg, string logCategory = "OWO")
         {
-            try
-            {
-                using (StreamWriter w = File.AppendText($"{modPath}\\Logs\\owolog_" + DateTime.Now.ToString("yyyyMMdd") + ".log"))
-                {
-                    w.WriteLine($"[{logCategory}]: {msg}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Log($"[OWO-WARNING]{ex}");
-            }
+            //try
+            //{
+            //    using (StreamWriter w = File.AppendText($"{modPath}\\Logs\\owolog_" + DateTime.Now.ToString("yyyyMMdd") + ".log"))
+            //    {
+            //        w.WriteLine($"[{logCategory}]: {msg}");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.Log($"[OWO-WARNING]{ex}");
+            //}
         }
 
         #region Skin Configuration
